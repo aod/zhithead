@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.1-dev (60faa23, 2020-06-06)"
+   sodipodi:docname="CLUB-7.svg"
+   width="63.00013mm"
+   height="88.000046mm"
+   viewBox="0 0 238.11073 332.5986"
+   version="1.1"
+   id="svg8">
+  <sodipodi:namedview
+     inkscape:current-layer="svg8"
+     inkscape:window-maximized="0"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="-405.10908"
+     inkscape:cx="-139.69169"
+     inkscape:zoom="0.10005518"
+     showgrid="false"
+     id="namedview20"
+     inkscape:window-height="485"
+     inkscape:window-width="774"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <title
+     id="title8745">Vector Playing Cards</title>
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Vector Playing Cards</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Chris Aguilar</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Copyright 2011, 017</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Chris Aguilar</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:description>Vector Playing Cards</dc:description>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Chris Aguilar</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <cc:license
+           rdf:resource="https://opensource.org/licenses/lgpl-3.0.html" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-312.0568,-2.8465438)">
+    <g
+       transform="matrix(1.07145,0,0,1.07009,-1883.22,1167.5)"
+       id="CLUB-7">
+      <rect
+         y="-1088.3696"
+         x="2048.884"
+         height="310.81366"
+         width="222.23224"
+         id="rect6355-6-85-3-1-8-1"
+         style="display:inline;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.996734;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         rx="10.62995"
+         ry="10.629899" />
+      <path
+         d="m 2211.5312,-1055.3647 c -9.7745,0.2122 -14.1574,11.2172 -6.9184,19.7633 1.0499,1.2465 1.1582,1.9618 -0.7645,0.7645 -4.8739,-3.2592 -14.2193,-1.1166 -14.6979,8.8473 -0.5911,12.2769 16.5629,15.8142 19.7838,2.7596 0.17,-1.3773 1.2895,-1.3459 1.0195,0.6092 -0.2937,5.3064 -1.9509,10.2661 -4.2287,15.1025 3.8391,0 8.1296,0 11.6203,0 -2.2777,-4.8364 -3.935,-9.7961 -4.2287,-15.1025 -0.2699,-1.9551 0.8495,-1.9865 1.0195,-0.6092 3.2209,13.0546 20.3749,9.5173 19.7838,-2.7596 -0.4785,-9.9639 -9.824,-12.1065 -14.6979,-8.8473 -1.9227,1.1973 -1.8144,0.482 -0.7645,-0.7645 7.239,-8.5461 2.8561,-19.5511 -6.9183,-19.7633 0,-10e-5 0,0 -0.01,0 z"
+         id="path147-0-8-1-6-13-2-0-1-5"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2108.4604,-1055.3647 c -9.7745,0.2122 -14.1574,11.2172 -6.9184,19.7633 1.0499,1.2465 1.1582,1.9618 -0.7646,0.7645 -4.8738,-3.2592 -14.2191,-1.1166 -14.6978,8.8473 -0.591,12.2769 16.5629,15.8142 19.7838,2.7596 0.17,-1.3773 1.2894,-1.3459 1.0195,0.6092 -0.2937,5.3064 -1.9509,10.2661 -4.2287,15.1025 3.8391,0 8.1296,0 11.6203,0 -2.2777,-4.8364 -3.935,-9.7961 -4.2287,-15.1025 -0.2699,-1.9551 0.8495,-1.9865 1.0195,-0.6092 3.2209,13.0546 20.3749,9.5173 19.7838,-2.7596 -0.4785,-9.9639 -9.824,-12.1065 -14.6979,-8.8473 -1.9227,1.1973 -1.8144,0.482 -0.7645,-0.7645 7.239,-8.5461 2.8561,-19.5511 -6.9183,-19.7633 0,-10e-5 0,0 -0.01,0 z"
+         id="path147-0-8-1-6-75-2-83-2-0-7"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2211.5312,-809.73168 c -9.7745,-0.21226 -14.1574,-11.21727 -6.9184,-19.76328 1.0499,-1.24653 1.1582,-1.96188 -0.7645,-0.76453 -4.8739,3.25919 -14.2192,1.11663 -14.6979,-8.84728 -0.591,-12.27694 16.5629,-15.81426 19.7838,-2.75966 0.17,1.37736 1.2895,1.34593 1.0195,-0.60917 -0.2937,-5.30641 -1.9509,-10.26605 -4.2287,-15.10253 3.8391,0 8.1296,0 11.6203,0 -2.2777,4.83648 -3.935,9.79612 -4.2287,15.10253 -0.2699,1.9551 0.8495,1.98653 1.0195,0.60917 3.2209,-13.0546 20.3749,-9.51728 19.7838,2.75966 -0.4785,9.96391 -9.824,12.10647 -14.6979,8.84728 -1.9227,-1.19735 -1.8144,-0.482 -0.7645,0.76453 7.239,8.54601 2.8561,19.55101 -6.9183,19.76328 0,6e-5 0,-5e-5 -0.01,0 z"
+         id="path147-0-8-1-6-7-5-5-7-7-7-6"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2108.4604,-809.73168 c -9.7745,-0.21226 -14.1574,-11.21727 -6.9184,-19.76328 1.0499,-1.24653 1.1582,-1.96188 -0.7646,-0.76453 -4.8738,3.25919 -14.2191,1.11663 -14.6978,-8.84728 -0.591,-12.27694 16.5629,-15.81426 19.7838,-2.75966 0.17,1.37736 1.2894,1.34593 1.0195,-0.60917 -0.2937,-5.30641 -1.9509,-10.26605 -4.2287,-15.10253 3.8391,0 8.1296,0 11.6203,0 -2.2777,4.83648 -3.935,9.79612 -4.2287,15.10253 -0.2699,1.9551 0.8495,1.98653 1.0195,0.60917 3.2209,-13.0546 20.3749,-9.51728 19.7838,2.75966 -0.4785,9.96391 -9.824,12.10647 -14.6979,8.84728 -1.9227,-1.19735 -1.8144,-0.482 -0.7645,0.76453 7.239,8.54601 2.8561,19.55101 -6.9183,19.76328 0,6e-5 0,-5e-5 -0.01,0 z"
+         id="path147-0-8-1-6-75-6-1-2-9-1-9"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2159.996,-1005.9179 c -9.7745,0.2122 -14.1573,11.21724 -6.9184,19.76326 1.0499,1.24653 1.1583,1.96187 -0.7646,0.76452 -4.8737,-3.25919 -14.2191,-1.11662 -14.6977,8.84727 -0.5911,12.27695 16.5628,15.81427 19.7836,2.75967 0.1701,-1.37736 1.2895,-1.34593 1.0196,0.60916 -0.2937,5.30642 -1.9509,10.26606 -4.2287,15.10253 3.8391,0 8.1296,0 11.6202,0 -2.2776,-4.83647 -3.9349,-9.79611 -4.2286,-15.10253 -0.2699,-1.95509 0.8495,-1.98652 1.0195,-0.60916 3.2209,13.0546 20.3749,9.51728 19.7838,-2.75967 -0.4785,-9.96389 -9.824,-12.10646 -14.6979,-8.84727 -1.9227,1.19735 -1.8144,0.48201 -0.7645,-0.76452 7.239,-8.54602 2.8561,-19.55106 -6.9183,-19.76326 0,-10e-5 0,0 -0.01,0 z"
+         id="path147-0-8-1-6-2-00-7-2-3-4"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2211.5312,-956.47142 c -9.7745,0.21225 -14.1574,11.21726 -6.9184,19.76328 1.0499,1.24653 1.1582,1.96187 -0.7645,0.76452 -4.8739,-3.25919 -14.2193,-1.11662 -14.6979,8.84728 -0.591,12.27695 16.5629,15.81427 19.7838,2.75967 0.17,-1.37736 1.2894,-1.34593 1.0195,0.60916 -0.2937,5.30642 -1.9509,10.26606 -4.2287,15.10253 3.8391,0 8.1296,0 11.6203,0 -2.2777,-4.83647 -3.935,-9.79611 -4.2287,-15.10253 -0.2699,-1.95509 0.8495,-1.98652 1.0195,-0.60916 3.2209,13.0546 20.3749,9.51728 19.7838,-2.75967 -0.4785,-9.9639 -9.824,-12.10647 -14.6979,-8.84728 -1.9227,1.19735 -1.8144,0.48201 -0.7645,-0.76452 7.239,-8.54602 2.8561,-19.55102 -6.9183,-19.76328 0,-6e-5 0,5e-5 -0.01,0 z"
+         id="path147-0-8-1-6-7-5-7-3-0-1-7-4"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2108.4604,-956.47142 c -9.7745,0.21225 -14.1574,11.21726 -6.9184,19.76328 1.0499,1.24653 1.1582,1.96187 -0.7646,0.76452 -4.8738,-3.25919 -14.2191,-1.11662 -14.6977,8.84728 -0.5911,12.27695 16.5628,15.81427 19.7837,2.75967 0.17,-1.37736 1.2894,-1.34593 1.0195,0.60916 -0.2937,5.30642 -1.9509,10.26606 -4.2287,15.10253 3.8391,0 8.1296,0 11.6203,0 -2.2777,-4.83647 -3.935,-9.79611 -4.2287,-15.10253 -0.2699,-1.95509 0.8495,-1.98652 1.0195,-0.60916 3.2209,13.0546 20.3749,9.51728 19.7838,-2.75967 -0.4785,-9.9639 -9.824,-12.10647 -14.6979,-8.84728 -1.9227,1.19735 -1.8144,0.48201 -0.7645,-0.76452 7.239,-8.54602 2.8561,-19.55102 -6.9183,-19.76328 0,-6e-5 0,5e-5 -0.01,0 z"
+         id="path147-0-8-1-6-75-6-6-5-3-9-6-0"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2253.9779,-827.36916 c 3.9097,-0.0884 5.663,-4.67387 2.7674,-8.2347 -0.4201,-0.51939 -0.4634,-0.81746 0.3058,-0.31856 1.9496,1.35801 5.6877,0.46526 5.8791,-3.68637 0.2365,-5.11539 -6.6252,-6.58927 -7.9135,-1.14986 -0.068,0.57391 -0.5158,0.56081 -0.4078,-0.25381 0.1175,-2.21101 0.7803,-4.27753 1.6915,-6.29272 -1.5493,0 -3.0987,0 -4.6479,0 0.9111,2.01519 1.5739,4.08171 1.6914,6.29272 0.108,0.81462 -0.3398,0.82772 -0.4078,0.25381 -1.2883,-5.43941 -8.1499,-3.96553 -7.9135,1.14986 0.1914,4.15163 3.9296,5.04438 5.8792,3.68637 0.7691,-0.4989 0.7258,-0.20083 0.3058,0.31856 -2.8956,3.56083 -1.1424,8.14624 2.7673,8.2347 10e-4,2e-5 0,-2e-5 0,0 z"
+         id="path147-6-9-8-7-0-5-6-8-4-3"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2066.0229,-1038.5561 c -3.9097,0.088 -5.663,4.6739 -2.7674,8.2347 0.42,0.5194 0.4633,0.8175 -0.3058,0.3186 -1.9497,-1.358 -5.6877,-0.4653 -5.8791,3.6863 -0.2365,5.1154 6.6252,6.5893 7.9134,1.1499 0.068,-0.5739 0.5159,-0.5608 0.4079,0.2538 -0.1176,2.211 -0.7803,4.2775 -1.6915,6.2927 1.5493,0 3.0986,0 4.6479,0 -0.9111,-2.0152 -1.5739,-4.0817 -1.6915,-6.2927 -0.1079,-0.8146 0.3398,-0.8277 0.4079,-0.2538 1.2882,5.4394 8.1499,3.9655 7.9134,-1.1499 -0.1914,-4.1516 -3.9295,-5.0443 -5.8791,-3.6863 -0.7691,0.4989 -0.7258,0.2008 -0.3059,-0.3186 2.8957,-3.5608 1.1424,-8.1462 -2.7672,-8.2347 0,0 0,0 0,0 z"
+         id="path147-6-9-8-7-4-5-62-5-2-9"
+         style="display:inline;opacity:1" />
+      <path
+         d="m 2060.9729,-1041.6852 c 2.1606,-11.4366 4.4606,-20.0224 10.4994,-29.3406 h -12.2747 v 4.011 h -3.2588 v -7.5612 h 17.9538 l 2.2144,3.5502 c -6.4138,7.0105 -12.2837,29.6721 -11.2444,29.3406 z m 0,0"
+         id="path25-6-8-8"
+         style="opacity:1" />
+      <path
+         d="m 2259.025,-824.24006 c -2.1606,11.4365 -4.4606,20.02245 -10.4994,29.34054 h 12.2747 v -4.01102 h 3.2588 v 7.56133 h -17.9539 l -2.2143,-3.55031 c 6.4138,-7.0104 12.2837,-29.67208 11.2444,-29.34054 z m 0,0"
+         id="path25-7-7-3-9"
+         style="opacity:1" />
+    </g>
+  </g>
+  <g
+     sodipodi:insensitive="true"
+     transform="translate(-273.59386,92.780477)"
+     id="g862">
+    <rect
+       ry="124.68219"
+       rx="144.48164"
+       y="-1029.6816"
+       x="-356.47275"
+       height="794.39795"
+       width="1659.9126"
+       id="rect22845-2"
+       style="opacity:1;vector-effect:none;fill:#006614;fill-opacity:1;stroke:none;stroke-width:1.74801;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       onclick=""
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.06667px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="472.19449"
+       y="-935.81342"
+       id="text5630-0"><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-935.81342"
+         id="tspan4923"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:1.06667px">Single Playing Card from:</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-875.81342"
+         id="tspan5035"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:1.06667px">Standard Edition - Color Set - Bordered </tspan><tspan
+         id="tspan12311"
+         sodipodi:role="line"
+         x="472.19449"
+         y="-820.48004" /><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-762.48004"
+         id="tspan4927"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffaaaa;fill-opacity:1;stroke-width:1.06667px">Copyright 2011, 2020 - Chris Aguilar - conjurenation@gmail.com</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-707.14667"
+         id="tspan12344" /><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-649.14667"
+         id="tspan4931"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:1.06667px">https://totalnonsense.com/open-source-vector-playing-cards/</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-593.81329"
+         id="tspan4929" /><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-535.81329"
+         id="tspan4919"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffaaaa;fill-opacity:1;stroke-width:1.06667px">Licensed under:</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-475.81329"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffaaaa;fill-opacity:1;stroke-width:1.06667px"
+         id="tspan1594-5">LGPL 3.0</tspan><tspan
+         id="tspan12253-3"
+         sodipodi:role="line"
+         x="472.19449"
+         y="-415.81329"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffaaaa;fill-opacity:1;stroke-width:1.06667px">https://www.gnu.org/licenses/lgpl-3.0.html</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-360.47995"
+         id="tspan5031" /><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-302.47992"
+         id="tspan5033"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;line-height:125%;font-family:Carlito;-inkscape-font-specification:'Carlito, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:1.06667px">Each Card Measures (63mm x 88mm)</tspan><tspan
+         sodipodi:role="line"
+         x="472.19449"
+         y="-247.14656"
+         id="tspan5634-6" /></text>
+  </g>
+</svg>
