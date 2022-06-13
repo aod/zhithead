@@ -1,7 +1,7 @@
 export default function App() {
   return (
-    <main className="bg-zinc-800 h-screen grid place-items-center">
-      <h1 className="text-zinc-300 text-8xl uppercase font-bold tracking-wide">
+    <main className="grid h-screen place-items-center bg-zinc-800">
+      <h1 className="text-8xl font-bold uppercase tracking-wide text-zinc-300">
         Zhithead
       </h1>
     </main>
