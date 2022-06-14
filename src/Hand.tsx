@@ -1,11 +1,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import useMeasure from "react-use-measure";
 import Card from "./Card";
 import { createCard, Rank, Suite } from "./lib";
 
 export default function Hand() {
-  const [ref, rect] = useMeasure();
   const [hoveredCardIdx, setHoveredCardIdx] = useState<number>(-2);
 
   const deck = [
@@ -20,26 +18,21 @@ export default function Hand() {
     createCard(Suite.Hearts, Rank.King),
   ];
 
-  const width = 170;
-  const pad = width / 2;
-  const totalWidth = width + deck.length * pad;
-  const startPos = rect.width / 2 - totalWidth / 2;
+  const width = 200;
+  const overlap = width / 2;
 
-  const translateXfactor = 8;
-  const translateX = width / translateXfactor;
   const variants = {
     left: {
       rotate: "-3deg",
       translateY: "-10%",
       scale: 1.1,
-      translateX: `-${translateX}px`,
+      translateX: `-12.5%`,
     },
-    none: {},
     right: {
       rotate: "3deg",
       translateY: "-10%",
       scale: 1.1,
-      translateX: `${translateX}px`,
+      translateX: `12.5%`,
     },
   };
 
@@ -49,23 +42,25 @@ export default function Hand() {
   };
 
   return (
-    <div ref={ref} className="relative w-full">
+    <div
+      className="flex w-full flex-nowrap items-end justify-center overflow-hidden py-[200px]"
+      style={{ paddingLeft: overlap }}
+    >
       {deck.map((card, i) => (
         <motion.div
           drag
-          dragElastic
+          dragElastic={0.2}
           animate={siblings[hoveredCardIdx - i]}
           variants={variants}
-          dragConstraints={{ left: 0, right: 0, bottom: 0, top: -400 }}
+          dragConstraints={{ left: 0, right: 0, bottom: 0, top: -50 }}
           whileHover={{ scale: 1.2, translateY: "-20%" }}
           whileTap={{ scale: 1 }}
           onHoverStart={() => setHoveredCardIdx(i)}
           onHoverEnd={() => setHoveredCardIdx(-2)}
-          className={"absolute"}
+          className="origin-center"
           style={{
-            left: startPos + i * pad,
-            width: width,
-            transformOrigin: "center",
+            marginLeft: -overlap,
+            width,
           }}
           key={i}
         >
