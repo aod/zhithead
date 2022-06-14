@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^6.3.11",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-use-measure": "^2.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

@@ -15,8 +15,9 @@ export interface CardProps {
 
 export default function Card(props: CardProps) {
   return (
-    <div className="select-none rounded-2xl bg-zinc-600 p-2.5">
-      <img src={createCardSVGPath(props.card)} className="w-[200px]" />
+    <div className="relative select-none rounded-2xl bg-zinc-600">
+      <div className="absolute h-full w-full" />
+      <img src={createCardSVGPath(props.card)} className="p-2" />
     </div>
   );
 }
