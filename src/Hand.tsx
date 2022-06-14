@@ -25,17 +25,21 @@ export default function Hand() {
   const totalWidth = width + deck.length * pad;
   const startPos = rect.width / 2 - totalWidth / 2;
 
+  const translateXfactor = 8;
+  const translateX = width / translateXfactor;
   const variants = {
     left: {
       rotate: "-3deg",
       translateY: "-10%",
-      transformOrigin: "bottom right",
+      scale: 1.1,
+      translateX: `-${translateX}px`,
     },
     none: {},
     right: {
       rotate: "3deg",
       translateY: "-10%",
-      transformOrigin: "bottom left",
+      scale: 1.1,
+      translateX: `${translateX}px`,
     },
   };
 
@@ -53,7 +57,7 @@ export default function Hand() {
           animate={siblings[hoveredCardIdx - i]}
           variants={variants}
           dragConstraints={{ left: 0, right: 0, bottom: 0, top: -400 }}
-          whileHover={{ scale: 1.15, translateY: "-20%" }}
+          whileHover={{ scale: 1.2, translateY: "-20%" }}
           whileTap={{ scale: 1 }}
           onHoverStart={() => setHoveredCardIdx(i)}
           onHoverEnd={() => setHoveredCardIdx(-2)}
@@ -61,6 +65,7 @@ export default function Hand() {
           style={{
             left: startPos + i * pad,
             width: width,
+            transformOrigin: "center",
           }}
           key={i}
         >
