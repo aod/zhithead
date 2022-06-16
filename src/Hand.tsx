@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import Card from "./Card";
 import { createCard, Rank, Suite, Card as LibCard } from "./lib";
+import { Option } from "./util";
 
 export default function Hand() {
   const hand = useMemo(
@@ -42,8 +43,8 @@ export default function Hand() {
     return hasBeenPlayed ? 0 : nonPlayedCurrentCardIdx - parentIdx;
   }
 
-  function offsetFromHovered(index: number) {
-    if (hoveredCardIdx === null) return null;
+  function offsetFromHovered(index: number): Option<number> {
+    if (hoveredCardIdx === null) return Option.None();
     const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
       (card) => card === hand[hoveredCardIdx]
     );
@@ -51,9 +52,10 @@ export default function Hand() {
       (card) => card === hand[index]
     );
     const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
-    return hasBeenPlayed
-      ? 0
-      : nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx;
+    if (hasBeenPlayed) return Option.None();
+    return Option.Some(
+      nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx
+    );
   }
 
   function sign(n: number) {
@@ -70,29 +72,31 @@ export default function Hand() {
       y: 0,
     },
     show: (idx: number) => ({
-      x:
-        offsetFromHovered(idx) === null
-          ? 0
-          : { [1]: overlap / 3 }[offsetFromHovered(idx)!] ?? 0,
+      x: offsetFromHovered(idx)
+        .filter((i) => i === 1)
+        .mapOr(0, () => overlap / 3),
       y:
         Math.abs(offsetFromCentered(idx)) ** 1.75 +
-        (offsetFromHovered(idx) === null
-          ? 0
-          : [-35, -15][Math.abs(offsetFromHovered(idx)!)] ?? 0),
+        offsetFromHovered(idx)
+          .map((i) => new Option([-35, -15].at(Math.abs(i))))
+          .flatten()
+          .unwrapOr(0),
       transition: {
         delay: hoveredCardIdx === null ? idx * 0.02 : 0,
       },
       rotate: `${
         offsetFromCentered(idx) * 1 +
-        (offsetFromHovered(idx) === null
-          ? 0
-          : ([0, 1.5][Math.abs(offsetFromHovered(idx)!)] ?? 0) *
-            sign(offsetFromHovered(idx)!))
+        offsetFromHovered(idx)
+          .map((i) =>
+            new Option([0, 1.5].at(Math.abs(i))).map((val) => val * sign(i))
+          )
+          .flatten()
+          .unwrapOr(0)
       }deg`,
-      scale:
-        offsetFromHovered(idx) === null
-          ? 1
-          : [1.3, 1.15].at(Math.abs(offsetFromHovered(idx)!)) ?? 1,
+      scale: offsetFromHovered(idx)
+        .map((i) => new Option([1.3, 1.15].at(Math.abs(i))))
+        .flatten()
+        .unwrapOr(1),
     }),
     hidden: {
       y: 400,
