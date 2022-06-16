@@ -40,20 +40,16 @@ export default function Hand() {
   };
 
   const chooseVariant = (index: number) => {
-    if (played.includes(hand[index])) {
-      return "played";
-    }
-    if (hoveredCardIdx === null) {
-      return;
-    }
-    for (let i = hoveredCardIdx + 1; i <= index; i++) {
-      if (!played.includes(hand[i]) && i !== index) break;
-      if (i === index) return "right";
-    }
-    for (let i = hoveredCardIdx - 1; i >= 0; i--) {
-      if (!played.includes(hand[i]) && i !== index) break;
-      if (i === index) return "left";
-    }
+    if (played.includes(hand[index])) return "played";
+    if (hoveredCardIdx === null) return;
+    const nonPlayedCards = hand.filter((card) => !played.includes(card));
+    const nonPlayedHoveredCardIdx = nonPlayedCards.findIndex(
+      (card) => card === hand[hoveredCardIdx]
+    );
+    if (nonPlayedCards[nonPlayedHoveredCardIdx - 1] === hand[index])
+      return "left";
+    if (nonPlayedCards[nonPlayedHoveredCardIdx + 1] === hand[index])
+      return "right";
   };
 
   return (
