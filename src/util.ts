@@ -21,3 +21,9 @@ export class Option<T> {
     this.isSome() ? f(this._inner!) : or;
   toString = () => (this.isSome() ? `Some(${"" + this._inner})` : "None");
 }
+
+export function sign(n: number) {
+  if (n > 0) return 1;
+  if (n < 0) return -1;
+  return 0;
+}

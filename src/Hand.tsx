@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import Card from "./Card";
 import { createCard, Rank, Suite, Card as LibCard } from "./lib";
-import { Option } from "./util";
+import { Option, sign } from "./util";
 
 export default function Hand() {
   const hand = useMemo(
@@ -56,12 +56,6 @@ export default function Hand() {
     return Option.Some(
       nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx
     );
-  }
-
-  function sign(n: number) {
-    if (n > 0) return 1;
-    if (n < 0) return -1;
-    return 0;
   }
 
   const variants = {
