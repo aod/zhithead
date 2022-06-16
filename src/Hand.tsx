@@ -28,6 +28,7 @@ export default function Hand() {
     translateY: "-10%",
     scale: 1.1,
     translateX: `${12.5 * (isRight ? 1 : -1)}%`,
+    y: 0,
   });
   const variants = {
     left: createVariant(false),
@@ -36,12 +37,22 @@ export default function Hand() {
       left: "50%",
       top: "50%",
       translateY: "-50%",
+      y: 0,
+    },
+    show: (idx: number) => ({
+      y: 0,
+      transition: {
+        delay: idx * 0.02,
+      },
+    }),
+    hidden: {
+      y: 400,
     },
   };
 
   const chooseVariant = (index: number) => {
     if (played.includes(hand[index])) return "played";
-    if (hoveredCardIdx === null) return;
+    if (hoveredCardIdx === null) return "show";
     const nonPlayedCards = hand.filter((card) => !played.includes(card));
     const nonPlayedHoveredCardIdx = nonPlayedCards.findIndex(
       (card) => card === hand[hoveredCardIdx]
@@ -50,6 +61,7 @@ export default function Hand() {
       return "left";
     if (nonPlayedCards[nonPlayedHoveredCardIdx + 1] === hand[index])
       return "right";
+    return "show";
   };
 
   return (
@@ -59,6 +71,8 @@ export default function Hand() {
     >
       {hand.map((card, i) => (
         <motion.div
+          custom={i}
+          initial="hidden"
           animate={chooseVariant(i)}
           variants={variants}
           whileHover={
