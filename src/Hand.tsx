@@ -1,38 +1,68 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Card from "./Card";
 import { createCard, Rank, Suite, Card as LibCard } from "./lib";
 
 export default function Hand() {
+  const hand = useMemo(
+    () => [
+      createCard(Suite.Clubs, Rank.Num6),
+      createCard(Suite.Clubs, Rank.Num9),
+      createCard(Suite.Diamonds, Rank.Num2),
+      createCard(Suite.Diamonds, Rank.Ace),
+      createCard(Suite.Hearts, Rank.Queen),
+      createCard(Suite.Hearts, Rank.King),
+      createCard(Suite.Hearts, Rank.Jack),
+      createCard(Suite.Hearts, Rank.Ace),
+      createCard(Suite.Hearts, Rank.Num4),
+      createCard(Suite.Hearts, Rank.Num2),
+      createCard(Suite.Hearts, Rank.Num6),
+      createCard(Suite.Hearts, Rank.Num9),
+    ],
+    []
+  );
+
+  const width = 165;
+  const overlap = width / 1.75;
+
   const [hoveredCardIdx, setHoveredCardIdx] = useState<number | null>(null);
   const [played, setPlayed] = useState<LibCard[]>([]);
 
-  const hand = [
-    createCard(Suite.Clubs, Rank.Num6),
-    createCard(Suite.Clubs, Rank.Num9),
-    createCard(Suite.Diamonds, Rank.Num2),
-    createCard(Suite.Diamonds, Rank.Ace),
-    createCard(Suite.Hearts, Rank.Queen),
-    createCard(Suite.Hearts, Rank.King),
-    createCard(Suite.Hearts, Rank.Jack),
-    createCard(Suite.Hearts, Rank.Ace),
-    createCard(Suite.Hearts, Rank.Num4),
-    createCard(Suite.Hearts, Rank.Num2),
-  ];
+  const nonPlayedCards = useMemo(
+    () => hand.filter((card) => !played.includes(card)),
+    [hand, played]
+  );
 
-  const width = 175;
-  const overlap = width / 2;
+  function offsetFromCentered(index: number) {
+    const parentIdx = Math.floor(nonPlayedCards.length / 2);
+    const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
+      (card) => card === hand[index]
+    );
+    const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
+    return hasBeenPlayed ? 0 : nonPlayedCurrentCardIdx - parentIdx;
+  }
 
-  const createVariant = (isRight: boolean) => ({
-    rotate: `${3 * (isRight ? 1 : -1)}deg`,
-    translateY: "-10%",
-    scale: 1.1,
-    translateX: `${12.5 * (isRight ? 1 : -1)}%`,
-    y: 0,
-  });
+  function offsetFromHovered(index: number) {
+    if (hoveredCardIdx === null) return null;
+    const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
+      (card) => card === hand[hoveredCardIdx]
+    );
+    const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
+      (card) => card === hand[index]
+    );
+    const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
+    return hasBeenPlayed
+      ? 0
+      : nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx;
+  }
+
+  function sign(n: number) {
+    if (n > 0) return 1;
+    if (n < 0) return -1;
+    return 0;
+  }
+
   const variants = {
-    left: createVariant(false),
-    right: createVariant(true),
     played: {
       left: "50%",
       top: "50%",
@@ -40,48 +70,48 @@ export default function Hand() {
       y: 0,
     },
     show: (idx: number) => ({
-      y: 0,
+      x:
+        offsetFromHovered(idx) === null
+          ? 0
+          : { [1]: overlap / 3 }[offsetFromHovered(idx)!] ?? 0,
+      y:
+        Math.abs(offsetFromCentered(idx)) ** 1.75 +
+        (offsetFromHovered(idx) === null
+          ? 0
+          : [-35, -15][Math.abs(offsetFromHovered(idx)!)] ?? 0),
       transition: {
-        delay: idx * 0.02,
+        delay: hoveredCardIdx === null ? idx * 0.02 : 0,
       },
+      rotate: `${
+        offsetFromCentered(idx) * 1 +
+        (offsetFromHovered(idx) === null
+          ? 0
+          : ([0, 1.5][Math.abs(offsetFromHovered(idx)!)] ?? 0) *
+            sign(offsetFromHovered(idx)!))
+      }deg`,
+      scale:
+        offsetFromHovered(idx) === null
+          ? 1
+          : [1.3, 1.15].at(Math.abs(offsetFromHovered(idx)!)) ?? 1,
     }),
     hidden: {
       y: 400,
     },
   };
 
-  const chooseVariant = (index: number) => {
-    if (played.includes(hand[index])) return "played";
-    if (hoveredCardIdx === null) return "show";
-    const nonPlayedCards = hand.filter((card) => !played.includes(card));
-    const nonPlayedHoveredCardIdx = nonPlayedCards.findIndex(
-      (card) => card === hand[hoveredCardIdx]
-    );
-    if (nonPlayedCards[nonPlayedHoveredCardIdx - 1] === hand[index])
-      return "left";
-    if (nonPlayedCards[nonPlayedHoveredCardIdx + 1] === hand[index])
-      return "right";
-    return "show";
-  };
-
   return (
     <div
-      className="flex w-full flex-nowrap items-end justify-center pb-8"
+      className="flex w-full flex-nowrap items-end justify-center pb-16"
       style={{ paddingLeft: overlap }}
     >
-      {hand.map((card, i) => (
+      {hand.map((card, idx) => (
         <motion.div
-          custom={i}
+          custom={idx}
           initial="hidden"
-          animate={chooseVariant(i)}
+          animate={played.includes(hand[idx]) ? "played" : "show"}
           variants={variants}
-          whileHover={
-            played.includes(card) ? {} : { scale: 1.2, translateY: "-20%" }
-          }
-          whileTap={{ scale: 1 }}
-          onHoverStart={() => !played.includes(card) && setHoveredCardIdx(i)}
+          onHoverStart={() => !played.includes(card) && setHoveredCardIdx(idx)}
           onHoverEnd={() => setHoveredCardIdx(null)}
-          className="origin-center"
           style={{
             marginLeft: -overlap,
             width,
@@ -93,8 +123,8 @@ export default function Hand() {
           }}
           key={card}
           onClick={() => {
-            setPlayed([...played, card]);
             setHoveredCardIdx(null);
+            setPlayed([...played, card]);
           }}
         >
           <Card card={card} />
