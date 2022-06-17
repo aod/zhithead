@@ -26,7 +26,9 @@ export default function Hand() {
   const width = 165;
   const overlap = width / 1.75;
 
-  const [hoveredCardIdx, setHoveredCardIdx] = useState<number | null>(null);
+  const [hoveredCardIdx, setHoveredCardIdx] = useState<Option<number>>(
+    Option.None()
+  );
   const [played, setPlayed] = useState<LibCard[]>([]);
 
   const nonPlayedCards = useMemo(
@@ -34,28 +36,32 @@ export default function Hand() {
     [hand, played]
   );
 
-  function offsetFromCentered(index: number) {
+  function offsetFromCentered(index: number): Option<number> {
     const parentIdx = Math.floor(nonPlayedCards.length / 2);
     const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
       (card) => card === hand[index]
     );
     const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
-    return hasBeenPlayed ? 0 : nonPlayedCurrentCardIdx - parentIdx;
+    if (hasBeenPlayed) return Option.None();
+    return Option.Some(nonPlayedCurrentCardIdx - parentIdx);
   }
 
   function offsetFromHovered(index: number): Option<number> {
-    if (hoveredCardIdx === null) return Option.None();
-    const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
-      (card) => card === hand[hoveredCardIdx]
-    );
-    const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
-      (card) => card === hand[index]
-    );
-    const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
-    if (hasBeenPlayed) return Option.None();
-    return Option.Some(
-      nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx
-    );
+    return hoveredCardIdx
+      .map((i) => {
+        const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
+          (card) => card === hand[i]
+        );
+        const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
+          (card) => card === hand[index]
+        );
+        const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
+        if (hasBeenPlayed) return Option.None<number>();
+        return Option.Some(
+          nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx
+        );
+      })
+      .flatten();
   }
 
   const variants = {
@@ -70,7 +76,9 @@ export default function Hand() {
         .filter((i) => i === 1)
         .mapOr(0, () => overlap / 3),
       y:
-        Math.abs(offsetFromCentered(idx)) ** 1.75 +
+        offsetFromCentered(idx)
+          .map(Math.abs)
+          .mapOr(0, (i) => i ** 1.75) +
         offsetFromHovered(idx)
           .map((i) => new Option([-35, -15].at(Math.abs(i))))
           .flatten()
@@ -79,7 +87,7 @@ export default function Hand() {
         delay: hoveredCardIdx === null ? idx * 0.02 : 0,
       },
       rotate: `${
-        offsetFromCentered(idx) * 1 +
+        offsetFromCentered(idx).mapOr(0, (i) => i * 1) +
         offsetFromHovered(idx)
           .map((i) =>
             new Option([0, 1.5].at(Math.abs(i))).map((val) => val * sign(i))
@@ -108,8 +116,10 @@ export default function Hand() {
           initial="hidden"
           animate={played.includes(hand[idx]) ? "played" : "show"}
           variants={variants}
-          onHoverStart={() => !played.includes(card) && setHoveredCardIdx(idx)}
-          onHoverEnd={() => setHoveredCardIdx(null)}
+          onHoverStart={() =>
+            !played.includes(card) && setHoveredCardIdx(Option.Some(idx))
+          }
+          onHoverEnd={() => setHoveredCardIdx(Option.None())}
           style={{
             marginLeft: -overlap,
             width,
@@ -121,7 +131,7 @@ export default function Hand() {
           }}
           key={card}
           onClick={() => {
-            setHoveredCardIdx(null);
+            setHoveredCardIdx(Option.None());
             setPlayed([...played, card]);
           }}
         >
