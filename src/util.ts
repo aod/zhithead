@@ -11,12 +11,12 @@ export class Option<T> {
   unwrap = (): T => this.expect("Failed to unwrap");
   unwrapOr = (or: T) => (this.isSome() ? this._inner! : or);
   filter = (predicate: (inner: T) => boolean) =>
-    this.isNone() ? this : predicate(this._inner!) ? this : new Option<T>();
+    this.isNone() ? this : predicate(this._inner!) ? this : Option.None<T>();
   flatten<U>(this: Option<Option<U>>): Option<U> {
-    return this.isSome() ? this._inner! : new Option();
+    return this.isSome() ? this._inner! : Option.None();
   }
   map = <U>(f: (inner: T) => U) =>
-    this.isSome() ? new Option(f(this._inner!)) : new Option<U>();
+    this.isSome() ? new Option(f(this._inner!)) : Option.None<U>();
   mapOr = <U>(or: U, f: (inner: T) => U) =>
     this.isSome() ? f(this._inner!) : or;
   toString = () => (this.isSome() ? `Some(${"" + this._inner})` : "None");
