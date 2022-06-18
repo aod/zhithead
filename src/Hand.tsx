@@ -84,7 +84,7 @@ export default function Hand() {
           .flatten()
           .unwrapOr(0),
       transition: {
-        delay: hoveredCardIdx === null ? idx * 0.02 : 0,
+        delay: hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.02),
       },
       rotate: `${
         offsetFromCentered(idx).mapOr(0, (i) => i * 1) +
