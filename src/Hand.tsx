@@ -1,28 +1,14 @@
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Card from "./Card";
-import { createCard, Rank, Suite, Card as LibCard } from "./lib";
+import { Card as LibCard } from "./lib";
 import { Option, sign } from "./util";
 
-export default function Hand() {
-  const hand = useMemo(
-    () => [
-      createCard(Suite.Clubs, Rank.Num6),
-      createCard(Suite.Clubs, Rank.Num9),
-      createCard(Suite.Diamonds, Rank.Num2),
-      createCard(Suite.Diamonds, Rank.Ace),
-      createCard(Suite.Hearts, Rank.Queen),
-      createCard(Suite.Hearts, Rank.King),
-      createCard(Suite.Hearts, Rank.Jack),
-      createCard(Suite.Hearts, Rank.Ace),
-      createCard(Suite.Hearts, Rank.Num4),
-      createCard(Suite.Hearts, Rank.Num2),
-      createCard(Suite.Hearts, Rank.Num6),
-      createCard(Suite.Hearts, Rank.Num9),
-    ],
-    []
-  );
+export interface HandProps {
+  cards: LibCard[];
+}
 
+export default function Hand(props: HandProps) {
   const width = 165;
   const overlap = width / 1.75;
 
@@ -30,16 +16,18 @@ export default function Hand() {
     Option.None()
   );
   const [played, setPlayed] = useState<LibCard[]>([]);
+  const hasHoveredAtLeastOnce = useRef(false);
+  hasHoveredAtLeastOnce.current ||= hoveredCardIdx.isSome();
 
   const nonPlayedCards = useMemo(
-    () => hand.filter((card) => !played.includes(card)),
-    [hand, played]
+    () => props.cards.filter((card) => !played.includes(card)),
+    [props.cards, played]
   );
 
   function offsetFromCentered(index: number): Option<number> {
     const parentIdx = Math.floor(nonPlayedCards.length / 2);
     const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
-      (card) => card === hand[index]
+      (card) => card === props.cards[index]
     );
     const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
     if (hasBeenPlayed) return Option.None();
@@ -50,10 +38,10 @@ export default function Hand() {
     return hoveredCardIdx
       .map((i) => {
         const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
-          (card) => card === hand[i]
+          (card) => card === props.cards[i]
         );
         const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
-          (card) => card === hand[index]
+          (card) => card === props.cards[index]
         );
         const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
         if (hasBeenPlayed) return Option.None<number>();
@@ -84,7 +72,9 @@ export default function Hand() {
           .flatten()
           .unwrapOr(0),
       transition: {
-        delay: hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.02),
+        delay: hasHoveredAtLeastOnce.current
+          ? 0
+          : hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.02),
       },
       rotate: `${
         offsetFromCentered(idx).mapOr(0, (i) => i * 1) +
@@ -110,11 +100,11 @@ export default function Hand() {
       className="flex w-full flex-nowrap items-end justify-center pb-16"
       style={{ paddingLeft: overlap }}
     >
-      {hand.map((card, idx) => (
+      {props.cards.map((card, idx) => (
         <motion.div
           custom={idx}
           initial="hidden"
-          animate={played.includes(hand[idx]) ? "played" : "show"}
+          animate={played.includes(props.cards[idx]) ? "played" : "show"}
           variants={variants}
           onHoverStart={() =>
             !played.includes(card) && setHoveredCardIdx(Option.Some(idx))
