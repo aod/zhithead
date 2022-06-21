@@ -10,14 +10,20 @@ function createCardSVGPath(card: LibCard) {
 }
 
 export interface CardProps {
-  card: LibCard;
+  card?: LibCard;
+  flipped?: boolean;
 }
 
 export default function Card(props: CardProps) {
+  const src =
+    props.flipped || props.card === undefined
+      ? "/cards/BACK.svg"
+      : createCardSVGPath(props.card);
+
   return (
     <div className="relative select-none rounded-2xl bg-zinc-600">
       <div className="absolute h-full w-full" />
-      <img src={createCardSVGPath(props.card)} className="p-2" />
+      <img src={src} className="p-2" />
     </div>
   );
 }
