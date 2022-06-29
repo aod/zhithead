@@ -1,33 +1,25 @@
-import { motion } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
-import Card from "./Card";
-import { Card as LibCard } from "./lib";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { useSnapshot } from "valtio";
+import Card, { WIDTH } from "./Card";
+import { actions, store } from "./store";
 import { Option, sign } from "./util";
 
-export interface HandProps {
-  cards: LibCard[];
-}
+export default function Hand() {
+  const snap = useSnapshot(store);
 
-export default function Hand(props: HandProps) {
-  const width = 165;
-  const overlap = width / 1.75;
+  const overlap = WIDTH / 1.75;
 
   const [hoveredCardIdx, setHoveredCardIdx] = useState<Option<number>>(
     Option.None()
   );
-  const [played, setPlayed] = useState<LibCard[]>([]);
   const hasHoveredAtLeastOnce = useRef(false);
   hasHoveredAtLeastOnce.current ||= hoveredCardIdx.isSome();
 
-  const nonPlayedCards = useMemo(
-    () => props.cards.filter((card) => !played.includes(card)),
-    [props.cards, played]
-  );
-
   function offsetFromCentered(index: number): Option<number> {
-    const parentIdx = Math.floor(nonPlayedCards.length / 2);
-    const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
-      (card) => card === props.cards[index]
+    const parentIdx = Math.floor(snap.game.me.hand.length / 2);
+    const nonPlayedCurrentCardIdx = snap.game.me.hand.findIndex(
+      (card) => card === snap.game.me.hand[index]
     );
     const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
     if (hasBeenPlayed) return Option.None();
@@ -37,11 +29,11 @@ export default function Hand(props: HandProps) {
   function offsetFromHovered(index: number): Option<number> {
     return hoveredCardIdx
       .map((i) => {
-        const hoveredCardInNonPlayedCardsIdx = nonPlayedCards.findIndex(
-          (card) => card === props.cards[i]
+        const hoveredCardInNonPlayedCardsIdx = snap.game.me.hand.findIndex(
+          (card) => card === snap.game.me.hand[i]
         );
-        const nonPlayedCurrentCardIdx = nonPlayedCards.findIndex(
-          (card) => card === props.cards[index]
+        const nonPlayedCurrentCardIdx = snap.game.me.hand.findIndex(
+          (card) => card === snap.game.me.hand[index]
         );
         const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
         if (hasBeenPlayed) return Option.None<number>();
@@ -53,12 +45,6 @@ export default function Hand(props: HandProps) {
   }
 
   const variants = {
-    played: {
-      left: "50%",
-      top: "50%",
-      translateY: "-50%",
-      y: 0,
-    },
     show: (idx: number) => ({
       x: offsetFromHovered(idx)
         .filter((i) => i === 1)
@@ -96,38 +82,34 @@ export default function Hand(props: HandProps) {
   };
 
   return (
-    <div
+    <motion.div
       className="flex w-full flex-nowrap items-end justify-center pb-16"
       style={{ paddingLeft: overlap }}
     >
-      {props.cards.map((card, idx) => (
-        <motion.div
-          custom={idx}
-          initial="hidden"
-          animate={played.includes(props.cards[idx]) ? "played" : "show"}
-          variants={variants}
-          onHoverStart={() =>
-            !played.includes(card) && setHoveredCardIdx(Option.Some(idx))
-          }
-          onHoverEnd={() => setHoveredCardIdx(Option.None())}
-          style={{
-            marginLeft: -overlap,
-            width,
-            position: played.includes(card) ? "absolute" : "initial",
-            zIndex: Math.max(
-              played.findIndex((val) => val === card),
-              0
-            ),
-          }}
-          key={card}
-          onClick={() => {
-            setHoveredCardIdx(Option.None());
-            setPlayed([...played, card]);
-          }}
-        >
-          <Card card={card} />
-        </motion.div>
-      ))}
-    </div>
+      <LayoutGroup>
+        <AnimatePresence>
+          {snap.game.me.hand.map((card, idx) => (
+            <motion.div
+              custom={idx}
+              initial="hidden"
+              animate="show"
+              variants={variants}
+              onHoverStart={() => setHoveredCardIdx(Option.Some(idx))}
+              onHoverEnd={() => setHoveredCardIdx(Option.None())}
+              style={{
+                marginLeft: -overlap,
+              }}
+              key={card}
+              onClick={() => {
+                setHoveredCardIdx(Option.None());
+                actions.playCard(idx);
+              }}
+            >
+              <Card card={card} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </LayoutGroup>
+    </motion.div>
   );
 }

@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "framer-motion": "^6.3.11",
+    "immer": "^9.0.15",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "valtio": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

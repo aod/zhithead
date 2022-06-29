@@ -27,3 +27,12 @@ export function sign(n: number) {
   if (n < 0) return -1;
   return 0;
 }
+
+/** NOTE: Mutates array and also returns it for function chaining */
+export function shuffle<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}

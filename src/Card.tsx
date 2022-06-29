@@ -1,5 +1,7 @@
 import { Card as LibCard, getRank, getSuite, Rank, Suite } from "./lib";
 
+export const WIDTH = 165;
+
 function createCardSVGPath(card: LibCard) {
   const suitePathComponent = Suite[getSuite(card)].toUpperCase().slice(0, -1);
   const r = getRank(card);
@@ -23,7 +25,7 @@ export default function Card(props: CardProps) {
   return (
     <div className="relative select-none rounded-2xl bg-zinc-600">
       <div className="absolute h-full w-full" />
-      <img src={src} className="p-2" />
+      <img src={src} className="p-2" style={{ width: WIDTH }} />
     </div>
   );
 }
