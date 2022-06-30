@@ -1,4 +1,4 @@
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import Card, { WIDTH } from "./Card";
@@ -44,7 +44,7 @@ export default function Hand() {
       .flatten();
   }
 
-  const variants = {
+  const variants: Variants = {
     show: (idx: number) => ({
       x: offsetFromHovered(idx)
         .filter((i) => i === 1)
@@ -82,34 +82,30 @@ export default function Hand() {
   };
 
   return (
-    <motion.div
+    <div
       className="flex w-full flex-nowrap items-end justify-center pb-16"
       style={{ paddingLeft: overlap }}
     >
-      <LayoutGroup>
-        <AnimatePresence>
-          {snap.game.me.hand.map((card, idx) => (
-            <motion.div
-              custom={idx}
-              initial="hidden"
-              animate="show"
-              variants={variants}
-              onHoverStart={() => setHoveredCardIdx(Option.Some(idx))}
-              onHoverEnd={() => setHoveredCardIdx(Option.None())}
-              style={{
-                marginLeft: -overlap,
-              }}
-              key={card}
-              onClick={() => {
-                setHoveredCardIdx(Option.None());
-                actions.playCard(idx);
-              }}
-            >
-              <Card card={card} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </LayoutGroup>
-    </motion.div>
+      {snap.game.me.hand.map((card, idx) => (
+        <motion.div
+          custom={idx}
+          initial="hidden"
+          animate="show"
+          variants={variants}
+          onHoverStart={() => setHoveredCardIdx(Option.Some(idx))}
+          onHoverEnd={() => setHoveredCardIdx(Option.None())}
+          style={{
+            marginLeft: -overlap,
+          }}
+          key={card}
+          onClick={() => {
+            setHoveredCardIdx(Option.None());
+            actions.playCard(idx);
+          }}
+        >
+          <Card card={card} />
+        </motion.div>
+      ))}
+    </div>
   );
 }
