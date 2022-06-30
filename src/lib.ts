@@ -100,14 +100,20 @@ export enum StateKind {
 
 export type State =
   | { kind: StateKind.ChoosingOffHandFaceUpCards }
-  | { kind: StateKind.Playing; playerTurnIndex: number }
-  | { kind: StateKind.Ended; playerWonIndex: number };
+  | { kind: StateKind.Playing }
+  | { kind: StateKind.Ended };
 
 export interface Game {
   deck: Card[];
   me: Player;
   ai: Player;
   state: State;
+}
+
+export function setState(game: Game, state: State): Game {
+  return produce(game, (draft) => {
+    draft.state = state;
+  });
 }
 
 export function createGame(): Game {

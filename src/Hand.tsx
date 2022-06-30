@@ -60,7 +60,7 @@ export default function Hand() {
       transition: {
         delay: hasHoveredAtLeastOnce.current
           ? 0
-          : hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.02),
+          : hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.04),
       },
       rotate: `${
         offsetFromCentered(idx).mapOr(0, (i) => i * 1) +
@@ -83,7 +83,7 @@ export default function Hand() {
 
   return (
     <div
-      className="flex w-full flex-nowrap items-end justify-center pb-16"
+      className="flex w-full flex-nowrap items-end justify-center"
       style={{ paddingLeft: overlap }}
     >
       {snap.game.me.hand.map((card, idx) => (

@@ -26,7 +26,7 @@ export default function OffHand() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="flex gap-2"
+      className="flex justify-center gap-2"
     >
       {[0, 1, 2].map((index) => (
         <motion.div
