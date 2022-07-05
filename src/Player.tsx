@@ -2,6 +2,7 @@ import { useSnapshot } from "valtio";
 import Hand from "./Hand";
 import { StateKind } from "./lib";
 import OffHand from "./OffHand";
+import Pile from "./Pile";
 import { store } from "./store";
 import Switcher from "./Switcher";
 
@@ -13,6 +14,8 @@ export default function Player() {
       {snap.game.state.kind === StateKind.ChoosingOffHandFaceUpCards && (
         <OffHand />
       )}
+
+      {snap.game.state.kind === StateKind.Playing && <Pile />}
 
       {snap.game.state.kind === StateKind.ChoosingOffHandFaceUpCards ||
       (snap.game.state.kind === StateKind.Playing &&
