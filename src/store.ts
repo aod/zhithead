@@ -1,12 +1,5 @@
 import { proxy } from "valtio";
-import {
-  createGame,
-  Game,
-  StateKind,
-  dealCards,
-  playCard,
-  setState,
-} from "./lib";
+import { createGame, Game, dealCards, playCard } from "./lib";
 
 type ShownHand = "hand" | "offhand";
 
@@ -22,20 +15,7 @@ export const store = proxy<Store>({
 
 export const actions = {
   playCard(handCardIndex: number) {
-    switch (store.game.state.kind) {
-      case StateKind.ChoosingOffHandFaceUpCards:
-        if (store.game.me.offHand.faceUp.length < 3) {
-          store.game = playCard(
-            store.game,
-            handCardIndex,
-            store.game.me.offHand.faceUp.length
-          );
-          if (store.game.me.offHand.faceUp.length === 3) {
-            store.game = setState(store.game, { kind: StateKind.Playing });
-          }
-        }
-        break;
-    }
+    store.game = playCard(store.game, handCardIndex);
   },
   setShownHand(value: ShownHand) {
     store.shownHand = value;

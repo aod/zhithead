@@ -125,44 +125,38 @@ export function createGame(): Game {
   };
 }
 
-export function dealCards(game: Game): Game {
+type FromPlayers = "ai" | "me";
+const OFFHAND_CARDS_SIZE = 3;
+const INITIAL_HAND_CARDS_SIZE = 6;
+
+function dealCardsToPlayer(game: Game, player: FromPlayers) {
   return produce(game, (draft) => {
-    if (draft.state.kind === StateKind.ChoosingOffHandFaceUpCards) {
-      draft.me = {
-        hand: draft.deck.splice(-6),
-        offHand: {
-          faceDown: draft.deck.splice(-3),
-          faceUp: [],
-        },
-      };
-      draft.ai = {
-        hand: draft.deck.splice(-6),
-        offHand: {
-          faceDown: draft.deck.splice(-3),
-          faceUp: [],
-        },
-      };
-    }
+    draft[player].hand = draft.deck.splice(-INITIAL_HAND_CARDS_SIZE);
+    draft[player].offHand.faceDown = draft.deck.splice(-OFFHAND_CARDS_SIZE);
+    return draft;
   });
 }
 
-export function playCard(
-  game: Game,
-  handCardIndex: number,
-  offHandFaceUpIndex: number
-): Game {
-  return produce(game, (draft) => {
-    const handCard = draft.me.hand[handCardIndex];
-    const offHandFaceUpCard = draft.me.offHand.faceUp.at(offHandFaceUpIndex);
+export function dealCards(game: Game): Game {
+  return dealCardsToPlayer(dealCardsToPlayer(game, "me"), "ai");
+}
 
+export function hasChoosenAllFaceUpCards(game: Game): boolean {
+  return (
+    game.state.kind >= StateKind.Playing ||
+    game["me"].offHand.faceUp.length === OFFHAND_CARDS_SIZE
+  );
+}
+
+export function playCard(game: Game, handCardIndex: number): Game {
+  return produce(game, (draft) => {
+    const card = draft.me.hand[handCardIndex];
     switch (game.state.kind) {
       case StateKind.ChoosingOffHandFaceUpCards:
-        if (offHandFaceUpCard === undefined) {
-          draft.me.offHand.faceUp[offHandFaceUpIndex] = handCard;
-          draft.me.hand.splice(handCardIndex, 1);
-        } else {
-          draft.me.hand[handCardIndex] = offHandFaceUpCard;
-          draft.me.offHand.faceUp[offHandFaceUpIndex] = handCard;
+        draft.me.offHand.faceUp.push(card);
+        draft.me.hand.splice(handCardIndex, 1);
+        if (hasChoosenAllFaceUpCards(draft)) {
+          draft.state = { kind: StateKind.Playing };
         }
         break;
     }
