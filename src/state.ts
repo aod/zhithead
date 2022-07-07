@@ -1,6 +1,6 @@
 import { assign } from "@xstate/immer";
 import { createModel } from "xstate/lib/model";
-import { Card, createDeck, makePlayer, Player } from "./lib";
+import { Card, createDeck, dealCards, Player } from "./lib";
 import { shuffle } from "./util";
 
 type ShownHand = "hand" | "offhand";
@@ -12,10 +12,7 @@ interface ZhitheadContext {
 }
 
 function createInitialContext(): ZhitheadContext {
-  const deck = shuffle(createDeck());
-  const me = makePlayer();
-  me.hand = deck.splice(-6);
-  me.offHand.faceDown = deck.splice(-3);
+  const [deck, me] = dealCards(shuffle(createDeck()));
 
   return {
     deck,

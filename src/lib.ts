@@ -1,8 +1,3 @@
-import produce from "immer";
-import { shuffle } from "./util";
-
-export type Card = number;
-
 export enum Suite {
   Clubs,
   Diamonds,
@@ -26,9 +21,10 @@ export enum Rank {
   King,
 }
 
+export type Card = number;
 export const SUITE_BIN_WIDTH = 2;
 
-export function createCard(suite: Suite, rank: Rank): Card {
+export function createCard(suite: Readonly<Suite>, rank: Readonly<Rank>): Card {
   return (rank << SUITE_BIN_WIDTH) | suite;
 }
 
@@ -36,13 +32,13 @@ function _1s(n: number): number {
   return (1 << n) - 1;
 }
 
-export function getSuite(card: Card): Suite {
+export function getSuite(card: Readonly<Card>): Suite {
   return card & _1s(SUITE_BIN_WIDTH);
 }
 
 export const RANK_BIN_WIDTH = 4;
 
-export function getRank(card: Card): Rank {
+export function getRank(card: Readonly<Card>): Rank {
   return (card >> SUITE_BIN_WIDTH) & _1s(RANK_BIN_WIDTH);
 }
 
@@ -68,17 +64,20 @@ function createSuites(): Suite[] {
   return [Suite.Clubs, Suite.Diamonds, Suite.Hearts, Suite.Spades];
 }
 
-export function createDeck(): Card[] {
+export type Cards = Card[];
+export type Deck = Cards;
+
+export function createDeck(): Deck {
   return createSuites().flatMap((suite) =>
     createRanks().map((rank) => createCard(suite, rank))
   );
 }
 
 export interface Player {
-  hand: Card[];
+  hand: Cards;
   offHand: {
-    faceDown: Card[];
-    faceUp: Card[];
+    faceDown: Cards;
+    faceUp: Cards;
   };
 }
 
@@ -92,74 +91,13 @@ export function makePlayer(): Player {
   };
 }
 
-export enum StateKind {
-  ChoosingOffHandFaceUpCards,
-  Playing,
-  Ended,
-}
+const STARTING_HAND_SIZE = 6;
+const STARTING_FACEDOWN_SIZE = 3;
 
-export type State =
-  | { kind: StateKind.ChoosingOffHandFaceUpCards }
-  | { kind: StateKind.Playing }
-  | { kind: StateKind.Ended };
-
-export interface Game {
-  deck: Card[];
-  me: Player;
-  ai: Player;
-  state: State;
-}
-
-export function setState(game: Game, state: State): Game {
-  return produce(game, (draft) => {
-    draft.state = state;
-  });
-}
-
-export function createGame(): Game {
-  return {
-    deck: shuffle(createDeck()),
-    ai: makePlayer(),
-    me: makePlayer(),
-    state: { kind: StateKind.ChoosingOffHandFaceUpCards },
-  };
-}
-
-type FromPlayers = "ai" | "me";
-const OFFHAND_CARDS_SIZE = 3;
-const INITIAL_HAND_CARDS_SIZE = 6;
-
-function dealCardsToPlayer(game: Game, player: FromPlayers) {
-  return produce(game, (draft) => {
-    draft[player].hand = draft.deck.splice(-INITIAL_HAND_CARDS_SIZE);
-    draft[player].offHand.faceDown = draft.deck.splice(-OFFHAND_CARDS_SIZE);
-    return draft;
-  });
-}
-
-export function dealCards(game: Game): Game {
-  return dealCardsToPlayer(dealCardsToPlayer(game, "me"), "ai");
-}
-
-export function hasChoosenAllFaceUpCards(game: Game): boolean {
-  return (
-    game.state.kind >= StateKind.Playing ||
-    game["me"].offHand.faceUp.length === OFFHAND_CARDS_SIZE
-  );
-}
-
-export function playCard(game: Game, handCardIndex: number): Game {
-  return produce(game, (draft) => {
-    const card = draft.me.hand[handCardIndex];
-    switch (game.state.kind) {
-      case StateKind.ChoosingOffHandFaceUpCards:
-        draft.me.offHand.faceUp.push(card);
-        draft.me.hand.splice(handCardIndex, 1);
-        if (hasChoosenAllFaceUpCards(draft)) {
-          draft.state = { kind: StateKind.Playing };
-        }
-        break;
-    }
-    return draft;
-  });
+export function dealCards(deck: Readonly<Deck>): [Deck, Player] {
+  const deckCopy = deck.slice();
+  const player = makePlayer();
+  player.hand = deckCopy.splice(-STARTING_HAND_SIZE);
+  player.offHand.faceDown = deckCopy.splice(-STARTING_FACEDOWN_SIZE);
+  return [deckCopy, player];
 }
