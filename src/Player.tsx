@@ -1,31 +1,29 @@
-import { useSnapshot } from "valtio";
+import { useActor } from "@xstate/react";
+import { useContext } from "react";
+import { GlobalStateContext } from "./GlobalStateProvider";
 import Hand from "./Hand";
-import { StateKind } from "./lib";
 import OffHand from "./OffHand";
 import Pile from "./Pile";
-import { store } from "./store";
 import Switcher from "./Switcher";
 
 export default function Player() {
-  const snap = useSnapshot(store);
+  const globalServices = useContext(GlobalStateContext);
+  const [state] = useActor(globalServices.zhitheadService);
 
   return (
     <div className="flex flex-col gap-8 pb-10">
-      {snap.game.state.kind === StateKind.ChoosingOffHandFaceUpCards && (
-        <OffHand />
-      )}
+      {state.matches("choosingFaceUpCards") && <OffHand />}
 
-      {snap.game.state.kind === StateKind.Playing && <Pile />}
+      {state.matches("playing") && <Pile />}
 
-      {snap.game.state.kind === StateKind.ChoosingOffHandFaceUpCards ||
-      (snap.game.state.kind === StateKind.Playing &&
-        snap.shownHand === "hand") ? (
+      {state.matches("choosingFaceUpCards") ||
+      (state.matches("playing") && state.context.shownHand === "hand") ? (
         <Hand />
       ) : (
         <OffHand />
       )}
 
-      {snap.game.state.kind === StateKind.Playing && <Switcher />}
+      {state.matches("playing") && <Switcher />}
     </div>
   );
 }

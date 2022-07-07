@@ -1,12 +1,13 @@
+import { useActor } from "@xstate/react";
 import { motion, Variants } from "framer-motion";
-import { useRef, useState } from "react";
-import { useSnapshot } from "valtio";
+import { useContext, useRef, useState } from "react";
 import Card, { WIDTH } from "./Card";
-import { actions, store } from "./store";
+import { GlobalStateContext } from "./GlobalStateProvider";
 import { Option, sign } from "./util";
 
 export default function Hand() {
-  const snap = useSnapshot(store);
+  const globalServices = useContext(GlobalStateContext);
+  const [state, send] = useActor(globalServices.zhitheadService);
 
   const overlap = WIDTH / 1.75;
 
@@ -17,9 +18,9 @@ export default function Hand() {
   hasHoveredAtLeastOnce.current ||= hoveredCardIdx.isSome();
 
   function offsetFromCentered(index: number): Option<number> {
-    const parentIdx = Math.floor(snap.game.me.hand.length / 2);
-    const nonPlayedCurrentCardIdx = snap.game.me.hand.findIndex(
-      (card) => card === snap.game.me.hand[index]
+    const parentIdx = Math.floor(state.context.me.hand.length / 2);
+    const nonPlayedCurrentCardIdx = state.context.me.hand.findIndex(
+      (card) => card === state.context.me.hand[index]
     );
     const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
     if (hasBeenPlayed) return Option.None();
@@ -29,11 +30,11 @@ export default function Hand() {
   function offsetFromHovered(index: number): Option<number> {
     return hoveredCardIdx
       .map((i) => {
-        const hoveredCardInNonPlayedCardsIdx = snap.game.me.hand.findIndex(
-          (card) => card === snap.game.me.hand[i]
+        const hoveredCardInNonPlayedCardsIdx = state.context.me.hand.findIndex(
+          (card) => card === state.context.me.hand[i]
         );
-        const nonPlayedCurrentCardIdx = snap.game.me.hand.findIndex(
-          (card) => card === snap.game.me.hand[index]
+        const nonPlayedCurrentCardIdx = state.context.me.hand.findIndex(
+          (card) => card === state.context.me.hand[index]
         );
         const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
         if (hasBeenPlayed) return Option.None<number>();
@@ -86,7 +87,7 @@ export default function Hand() {
       className="flex w-full flex-nowrap items-end justify-center"
       style={{ paddingLeft: overlap }}
     >
-      {snap.game.me.hand.map((card, idx) => (
+      {state.context.me.hand.map((card, idx) => (
         <motion.div
           custom={idx}
           initial="hidden"
@@ -100,7 +101,7 @@ export default function Hand() {
           key={card}
           onClick={() => {
             setHoveredCardIdx(Option.None());
-            actions.playCard(idx);
+            send({ type: "PLAY_CARD", index: idx });
           }}
         >
           <Card card={card} />

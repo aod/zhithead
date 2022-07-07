@@ -1,10 +1,12 @@
+import { useActor } from "@xstate/react";
 import { motion, Variants } from "framer-motion";
-import { useSnapshot } from "valtio";
+import { useContext } from "react";
 import Card from "./Card";
-import { store } from "./store";
+import { GlobalStateContext } from "./GlobalStateProvider";
 
 export default function OffHand() {
-  const snap = useSnapshot(store);
+  const globalServices = useContext(GlobalStateContext);
+  const [state] = useActor(globalServices.zhitheadService);
 
   const container: Variants = {
     hidden: { opacity: 0 },
@@ -30,13 +32,13 @@ export default function OffHand() {
     >
       {[0, 1, 2].map((index) => (
         <motion.div
-          key={snap.game.me.offHand.faceUp[index] ?? `i${index}`}
+          key={state.context.me.offHand.faceUp[index] ?? `i${index}`}
           variants={item}
         >
-          {snap.game.me.offHand.faceUp[index] === undefined ? (
+          {state.context.me.offHand.faceUp[index] === undefined ? (
             <Card flipped />
           ) : (
-            <Card card={snap.game.me.offHand.faceUp[index]} />
+            <Card card={state.context.me.offHand.faceUp[index]} />
           )}
         </motion.div>
       ))}

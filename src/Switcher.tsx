@@ -1,10 +1,11 @@
 import { LayoutGroup, motion } from "framer-motion";
-import { PropsWithChildren } from "react";
-import { useSnapshot } from "valtio";
-import { actions, store } from "./store";
+import { PropsWithChildren, useContext } from "react";
+import { useActor } from "@xstate/react";
+import { GlobalStateContext } from "./GlobalStateProvider";
 
 export default function Switcher() {
-  const snap = useSnapshot(store);
+  const globalServices = useContext(GlobalStateContext);
+  const [state, send] = useActor(globalServices.zhitheadService);
 
   return (
     <motion.div
@@ -13,13 +14,17 @@ export default function Switcher() {
       className="flex justify-center gap-4"
     >
       <LayoutGroup>
-        <Option onClick={() => actions.setShownHand("hand")}>
+        <Option
+          onClick={() => send({ type: "SET_SHOWN_HAND", shownHand: "hand" })}
+        >
           Hand
-          {snap.shownHand === "hand" && <Selected />}
+          {state.context.shownHand === "hand" && <Selected />}
         </Option>
-        <Option onClick={() => actions.setShownHand("offhand")}>
+        <Option
+          onClick={() => send({ type: "SET_SHOWN_HAND", shownHand: "offhand" })}
+        >
           Off-Hand
-          {snap.shownHand === "offhand" && <Selected />}
+          {state.context.shownHand === "offhand" && <Selected />}
         </Option>
       </LayoutGroup>
     </motion.div>
