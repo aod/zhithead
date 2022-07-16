@@ -1,4 +1,4 @@
-import { Card as LibCard, getRank, getSuite, Rank, Suite } from "./lib";
+import { Card as LibCard, getRank, getSuite, Rank, Suite } from "../lib";
 
 export const WIDTH = 165;
 

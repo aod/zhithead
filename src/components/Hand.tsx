@@ -3,7 +3,7 @@ import { motion, Variants } from "framer-motion";
 import { useContext, useRef, useState } from "react";
 import Card, { WIDTH } from "./Card";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import { Option, sign } from "./util";
+import { Option, sign } from "../util";
 
 export default function Hand() {
   const globalServices = useContext(GlobalStateContext);
