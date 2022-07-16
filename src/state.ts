@@ -7,6 +7,7 @@ type ShownHand = "hand" | "offhand";
 
 interface ZhitheadContext {
   deck: Card[];
+  pile: Card[];
   me: Player;
   shownHand: ShownHand;
 }
@@ -16,6 +17,7 @@ function createInitialContext(): ZhitheadContext {
 
   return {
     deck,
+    pile: [],
     me,
     shownHand: "hand",
   };
@@ -50,6 +52,19 @@ export const zhitheadMachine = zhitheadModel.createMachine(
           SET_SHOWN_HAND: {
             actions: assign((context, event) => {
               context.shownHand = event.shownHand;
+            }),
+          },
+          PLAY_CARD: {
+            actions: assign((context, event) => {
+              const hands = [
+                context.me.hand,
+                context.me.offHand.faceUp,
+                context.me.offHand.faceDown,
+              ];
+              const hand = hands.find((cards) => cards.length);
+              if (!hand) return;
+              context.pile.push(hand[event.index]);
+              hand.splice(event.index, 1);
             }),
           },
         },
