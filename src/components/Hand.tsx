@@ -3,7 +3,7 @@ import { motion, Variants } from "framer-motion";
 import { useContext, useRef, useState } from "react";
 import Card, { WIDTH } from "./Card";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import { Option, sign } from "../util";
+import { offsetFromCenter, Option, sign } from "../util";
 
 export default function Hand() {
   const globalServices = useContext(GlobalStateContext);
@@ -17,32 +17,8 @@ export default function Hand() {
   const hasHoveredAtLeastOnce = useRef(false);
   hasHoveredAtLeastOnce.current ||= hoveredCardIdx.isSome();
 
-  function offsetFromCentered(index: number): Option<number> {
-    const parentIdx = Math.floor(state.context.me.hand.length / 2);
-    const nonPlayedCurrentCardIdx = state.context.me.hand.findIndex(
-      (card) => card === state.context.me.hand[index]
-    );
-    const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
-    if (hasBeenPlayed) return Option.None();
-    return Option.Some(nonPlayedCurrentCardIdx - parentIdx);
-  }
-
   function offsetFromHovered(index: number): Option<number> {
-    return hoveredCardIdx
-      .map((i) => {
-        const hoveredCardInNonPlayedCardsIdx = state.context.me.hand.findIndex(
-          (card) => card === state.context.me.hand[i]
-        );
-        const nonPlayedCurrentCardIdx = state.context.me.hand.findIndex(
-          (card) => card === state.context.me.hand[index]
-        );
-        const hasBeenPlayed = nonPlayedCurrentCardIdx === -1;
-        if (hasBeenPlayed) return Option.None<number>();
-        return Option.Some(
-          nonPlayedCurrentCardIdx - hoveredCardInNonPlayedCardsIdx
-        );
-      })
-      .flatten();
+    return hoveredCardIdx.map((i) => index - i);
   }
 
   const variants: Variants = {
@@ -51,9 +27,7 @@ export default function Hand() {
         .filter((i) => i === 1)
         .mapOr(0, () => overlap / 3),
       y:
-        offsetFromCentered(idx)
-          .map(Math.abs)
-          .mapOr(0, (i) => i ** 1.75) +
+        Math.abs(offsetFromCenter(state.context.me.hand, idx)) ** 1.75 +
         offsetFromHovered(idx)
           .map((i) => new Option([-35, -15].at(Math.abs(i))))
           .flatten()
@@ -64,7 +38,7 @@ export default function Hand() {
           : hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.04),
       },
       rotate: `${
-        offsetFromCentered(idx).mapOr(0, (i) => i * 1) +
+        offsetFromCenter(state.context.me.hand, idx) +
         offsetFromHovered(idx)
           .map((i) =>
             new Option([0, 1.5].at(Math.abs(i))).map((val) => val * sign(i))

@@ -36,3 +36,7 @@ export function shuffle<T>(array: T[]): T[] {
   }
   return array;
 }
+
+export function offsetFromCenter<T>(array: T[], index: number): number {
+  return index - Math.floor(array.length / 2);
+}
