@@ -8,9 +8,21 @@ export default function Pile() {
   const [state] = useActor(globalServices.zhitheadService);
 
   return (
-    <div className="flex justify-center">
+    <div className="relative flex justify-center">
       {state.context.pile.length ? (
-        <Card card={state.context.pile.at(-1)} />
+        <>
+          <div className="z-10">
+            <Card
+              key={state.context.pile.length}
+              card={state.context.pile.at(-1)}
+            />
+          </div>
+          {state.context.pile.length >= 2 && (
+            <div className="absolute">
+              <Card card={state.context.pile.at(-2)} />
+            </div>
+          )}
+        </>
       ) : (
         <EmptyPile />
       )}

@@ -36,7 +36,9 @@ export const zhitheadMachine = zhitheadModel.createMachine(
     context: zhitheadModel.initialContext,
     states: {
       choosingFaceUpCards: {
-        always: { target: "playing", cond: "hasChoosenAllFaceUpCards" },
+        after: {
+          180: { target: "playing", cond: "hasChoosenAllFaceUpCards" },
+        },
         on: {
           PLAY_CARD: {
             actions: assign((context, event) => {

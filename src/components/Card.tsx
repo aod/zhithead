@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Card as LibCard, getRank, getSuite, Rank, Suite } from "../lib";
 
 export const WIDTH = 165;
@@ -23,9 +24,12 @@ export default function Card(props: CardProps) {
       : createCardSVGPath(props.card);
 
   return (
-    <div className="relative select-none rounded-2xl bg-zinc-600">
+    <motion.div
+      layoutId={props.card?.toString()}
+      className="relative select-none rounded-2xl bg-zinc-600"
+    >
       <div className="absolute h-full w-full" />
       <img src={src} className="p-2" style={{ width: WIDTH }} />
-    </div>
+    </motion.div>
   );
 }
