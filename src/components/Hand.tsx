@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { motion, Variants } from "framer-motion";
 import { useContext, useRef, useState } from "react";
 import Card, { WIDTH } from "./Card";
@@ -7,7 +7,11 @@ import { offsetFromCenter, Option, sign } from "../util";
 
 export default function Hand() {
   const globalServices = useContext(GlobalStateContext);
-  const [state, send] = useActor(globalServices.zhitheadService);
+  const hand = useSelector(
+    globalServices.zhitheadService,
+    (state) => state.context.me.hand
+  );
+  const { send } = globalServices.zhitheadService;
 
   const overlap = WIDTH / 1.75;
 
@@ -27,7 +31,7 @@ export default function Hand() {
         .filter((i) => i === 1)
         .mapOr(0, () => overlap / 3),
       y:
-        Math.abs(offsetFromCenter(state.context.me.hand, idx)) ** 1.75 +
+        Math.abs(offsetFromCenter(hand, idx)) ** 1.75 +
         offsetFromHovered(idx)
           .map((i) => new Option([-35, -15].at(Math.abs(i))))
           .flatten()
@@ -38,7 +42,7 @@ export default function Hand() {
           : hoveredCardIdx.map(() => 0).unwrapOr(idx * 0.04),
       },
       rotate: `${
-        offsetFromCenter(state.context.me.hand, idx) +
+        offsetFromCenter(hand, idx) +
         offsetFromHovered(idx)
           .map((i) =>
             new Option([0, 1.5].at(Math.abs(i))).map((val) => val * sign(i))
@@ -61,7 +65,7 @@ export default function Hand() {
       className="flex w-full flex-nowrap items-end justify-center"
       style={{ paddingLeft: overlap }}
     >
-      {state.context.me.hand.map((card, idx) => (
+      {hand.map((card, idx) => (
         <motion.div
           custom={idx}
           initial="hidden"
