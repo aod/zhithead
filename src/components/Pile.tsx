@@ -11,14 +11,12 @@ export default function Pile() {
     <div className="relative flex justify-center">
       {state.context.pile.length ? (
         <>
-          <div className="z-10">
-            <Card
-              key={state.context.pile.length}
-              card={state.context.pile.at(-1)}
-            />
-          </div>
+          <Card
+            key={state.context.pile.length}
+            card={state.context.pile.at(-1)}
+          />
           {state.context.pile.length >= 2 && (
-            <div className="absolute">
+            <div className="absolute z-0">
               <Card card={state.context.pile.at(-2)} />
             </div>
           )}

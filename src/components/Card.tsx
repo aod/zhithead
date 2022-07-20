@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { motion } from "framer-motion";
 import { Card as LibCard, getRank, getSuite, Rank, Suite } from "../lib";
 
@@ -24,12 +25,13 @@ export default function Card(props: CardProps) {
       : createCardSVGPath(props.card);
 
   return (
-    <motion.div
+    <motion.img
       layoutId={props.card?.toString()}
-      className="relative select-none rounded-2xl bg-zinc-600"
-    >
-      <div className="absolute h-full w-full" />
-      <img src={src} className="p-2" style={{ width: WIDTH }} />
-    </motion.div>
+      className={clsx(
+        `relative h-card w-card select-none rounded-2xl bg-zinc-600 p-2`,
+        props.card !== undefined && "z-10"
+      )}
+      src={src}
+    />
   );
 }
