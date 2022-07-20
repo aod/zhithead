@@ -4,7 +4,7 @@ import ShownHand from "../ShownHand";
 
 export default function Playing() {
   return (
-    <div className="flex h-full flex-col justify-end gap-24 pb-10">
+    <div className="flex h-full flex-col items-center justify-end gap-24 pb-10">
       <Pile />
       <div className="space-y-8">
         <ShownHand />

@@ -59,7 +59,7 @@ export default function Hand() {
   };
 
   return (
-    <div className="flex w-full flex-nowrap items-end justify-center pl-card-x-overlap">
+    <div className="flex h-card-height w-full flex-nowrap items-end justify-center pl-card-x-overlap">
       {hand.map((card, idx) => (
         <motion.div
           custom={idx}
