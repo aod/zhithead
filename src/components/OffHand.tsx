@@ -19,7 +19,7 @@ export default function OffHand() {
     >
       {[0, 1, 2].map((index) => (
         <div key={offHand.faceUp[index] ?? `i${index}`}>
-          <div className="relative h-card w-card">
+          <div className="relative h-card-height w-card-width">
             {offHand.faceUp[index] !== undefined && (
               <Card card={offHand.faceUp[index]} />
             )}

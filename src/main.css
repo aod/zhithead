@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root,
+#root {
+  --og-card-width: 63mm;
+  --og-card-height: 88mm;
+  --card-scale-factor: 0.7;
+  --card-width: calc(var(--og-card-width) * var(--card-scale-factor));
+  --card-height: calc(var(--og-card-height) * var(--card-scale-factor));
+  --card-x-overlap-factor: 0.57;
+  --card-x-overlap: calc(var(--card-width) * var(--card-x-overlap-factor));
+}

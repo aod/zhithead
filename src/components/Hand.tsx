@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/react";
 import { motion, Variants } from "framer-motion";
 import { useContext, useRef, useState } from "react";
-import Card, { WIDTH } from "./Card";
+import Card from "./Card";
 import { GlobalStateContext } from "./GlobalStateProvider";
 import { offsetFromCenter, Option, sign } from "../util";
 
@@ -12,8 +12,6 @@ export default function Hand() {
     (state) => state.context.me.hand
   );
   const { send } = globalServices.zhitheadService;
-
-  const overlap = WIDTH / 1.75;
 
   const [hoveredCardIdx, setHoveredCardIdx] = useState<Option<number>>(
     Option.None()
@@ -29,7 +27,7 @@ export default function Hand() {
     show: (idx: number) => ({
       x: offsetFromHovered(idx)
         .filter((i) => i === 1)
-        .mapOr(0, () => overlap / 3),
+        .mapOr(0, () => 30),
       y:
         Math.abs(offsetFromCenter(hand, idx)) ** 1.75 +
         offsetFromHovered(idx)
@@ -61,10 +59,7 @@ export default function Hand() {
   };
 
   return (
-    <div
-      className="flex w-full flex-nowrap items-end justify-center"
-      style={{ paddingLeft: overlap }}
-    >
+    <div className="flex w-full flex-nowrap items-end justify-center pl-card-x-overlap">
       {hand.map((card, idx) => (
         <motion.div
           custom={idx}
@@ -73,9 +68,7 @@ export default function Hand() {
           variants={variants}
           onHoverStart={() => setHoveredCardIdx(Option.Some(idx))}
           onHoverEnd={() => setHoveredCardIdx(Option.None())}
-          style={{
-            marginLeft: -overlap,
-          }}
+          className="-ml-card-x-overlap"
           key={card}
           onClick={() => {
             setHoveredCardIdx(Option.None());
