@@ -28,7 +28,7 @@ export default function Card(props: CardProps) {
       onClick={() => props.onClick?.(props.card)}
       layoutId={props.card?.toString()}
       className={clsx(
-        `relative h-card-height w-card-width select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl`,
+        `max-w-card-width relative h-full max-h-card-height w-full select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl`,
         props.card !== undefined && "z-10"
       )}
       src={src}
