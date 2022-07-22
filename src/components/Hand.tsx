@@ -31,7 +31,7 @@ export default function Hand() {
       y:
         Math.abs(offsetFromCenter(hand, idx)) ** 1.75 +
         offsetFromHovered(idx)
-          .map((i) => new Option([-20, -12.5].at(Math.abs(i))))
+          .map((i) => new Option([-25, -12.5].at(Math.abs(i))))
           .flatten()
           .unwrapOr(0),
       transition: {

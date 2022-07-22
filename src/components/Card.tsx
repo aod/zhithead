@@ -26,7 +26,7 @@ export default function Card(props: CardProps) {
     <motion.img
       layoutId={props.card?.toString()}
       className={clsx(
-        `relative h-card-height w-card-width select-none rounded-2xl bg-zinc-600 p-2`,
+        `relative h-card-height w-card-width select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl`,
         props.card !== undefined && "z-10"
       )}
       src={src}
