@@ -3,7 +3,7 @@ import { motion, Variants } from "framer-motion";
 import { useContext, useRef, useState } from "react";
 import Card from "./Card";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import { offsetFromCenter, Option, sign } from "../util";
+import { offsetFromCenter, Option } from "../util";
 
 export default function Hand() {
   const globalServices = useContext(GlobalStateContext);
@@ -31,7 +31,7 @@ export default function Hand() {
       y:
         Math.abs(offsetFromCenter(hand, idx)) ** 1.75 +
         offsetFromHovered(idx)
-          .map((i) => new Option([-35, -15].at(Math.abs(i))))
+          .map((i) => new Option([-20, -12.5].at(Math.abs(i))))
           .flatten()
           .unwrapOr(0),
       transition: {
@@ -42,14 +42,11 @@ export default function Hand() {
       rotate: `${
         offsetFromCenter(hand, idx) +
         offsetFromHovered(idx)
-          .map((i) =>
-            new Option([0, 1.5].at(Math.abs(i))).map((val) => val * sign(i))
-          )
-          .flatten()
-          .unwrapOr(0)
+          .filter((i) => Math.abs(i) === 1)
+          .mapOr(0, (i) => i * 1.5)
       }deg`,
       scale: offsetFromHovered(idx)
-        .map((i) => new Option([1.3, 1.15].at(Math.abs(i))))
+        .map((i) => new Option([1.2, 1.1].at(Math.abs(i))))
         .flatten()
         .unwrapOr(1),
     }),
