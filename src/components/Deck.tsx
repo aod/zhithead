@@ -10,9 +10,15 @@ export default function Deck() {
     globalServices.zhitheadService,
     (state) => state.context.deck.length
   );
+  const { send } = globalServices.zhitheadService;
 
   return (
-    <div className="relative box-content h-card-height w-card-width rounded-xl border-2 border-dashed border-zinc-600 p-0.5">
+    <div
+      className="relative box-content h-card-height w-card-width rounded-xl border-2 border-dashed border-zinc-600 p-0.5"
+      onClick={() => {
+        send({ type: "TAKE_CARD" });
+      }}
+    >
       {hasDeck && <Card flipped />}
       <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
         <span

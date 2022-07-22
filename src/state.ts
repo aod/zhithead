@@ -28,6 +28,7 @@ const zhitheadModel = createModel(createInitialContext(), {
   events: {
     PLAY_CARD: (index: number) => ({ index }),
     SET_SHOWN_HAND: (shownHand: ShownHand) => ({ shownHand }),
+    TAKE_CARD: () => ({}),
   },
 });
 
@@ -77,6 +78,12 @@ export const zhitheadMachine = zhitheadModel.createMachine({
             if (!hand) return;
             context.pile.push(hand[event.index]);
             hand.splice(event.index, 1);
+          }),
+        },
+        TAKE_CARD: {
+          actions: assign((context) => {
+            const card = context.deck.pop();
+            if (card) context.me.hand.push(card);
           }),
         },
       },
