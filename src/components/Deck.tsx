@@ -6,11 +6,12 @@ import { GlobalStateContext } from "./GlobalStateProvider";
 
 export default function Deck() {
   const globalServices = useContext(GlobalStateContext);
-  const hasDeck = useSelector(
+  const deck = useSelector(
     globalServices.zhitheadService,
-    (state) => state.context.deck.length
+    (state) => state.context.deck
   );
   const { send } = globalServices.zhitheadService;
+  const hasDeck = Boolean(deck.length);
 
   return (
     <div
