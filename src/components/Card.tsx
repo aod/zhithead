@@ -14,6 +14,7 @@ function createCardSVGPath(card: LibCard) {
 export interface CardProps {
   card?: LibCard;
   flipped?: boolean;
+  onClick?: (card: LibCard | undefined) => void;
 }
 
 export default function Card(props: CardProps) {
@@ -24,6 +25,7 @@ export default function Card(props: CardProps) {
 
   return (
     <motion.img
+      onClick={() => props.onClick?.(props.card)}
       layoutId={props.card?.toString()}
       className={clsx(
         `relative h-card-height w-card-width select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl`,

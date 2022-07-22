@@ -67,12 +67,14 @@ export default function Hand() {
           onHoverEnd={() => setHoveredCardIdx(Option.None())}
           className="-ml-card-x-overlap"
           key={card}
-          onClick={() => {
-            setHoveredCardIdx(Option.None());
-            send({ type: "PLAY_CARD", index: idx });
-          }}
         >
-          <Card card={card} />
+          <Card
+            card={card}
+            onClick={() => {
+              setHoveredCardIdx(Option.None());
+              send({ type: "PLAY_CARD", index: idx });
+            }}
+          />
         </motion.div>
       ))}
     </div>
