@@ -8,7 +8,7 @@ export default function OffHand() {
   const globalServices = useContext(GlobalStateContext);
   const offHand = useSelector(
     globalServices.zhitheadService,
-    (state) => state.context.me.offHand
+    (state) => state.context.human.offHand
   );
 
   return (

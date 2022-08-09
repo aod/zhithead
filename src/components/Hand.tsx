@@ -9,7 +9,7 @@ export default function Hand() {
   const globalServices = useContext(GlobalStateContext);
   const hand = useSelector(
     globalServices.zhitheadService,
-    (state) => state.context.me.hand
+    (state) => state.context.human.hand
   );
   const { send } = globalServices.zhitheadService;
 

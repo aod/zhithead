@@ -9,17 +9,18 @@ type ShownHand = "hand" | "offhand";
 interface ZhitheadContext {
   deck: Card[];
   pile: Card[];
-  me: Player;
+  human: Player;
   shownHand: ShownHand;
 }
 
 function createInitialContext(): ZhitheadContext {
-  const [deck, me] = dealCards(shuffle(createDeck()));
+  const shuffledDeck = shuffle(createDeck());
+  const [deck, human] = dealCards(shuffledDeck);
 
   return {
     deck,
     pile: [],
-    me,
+    human,
     shownHand: "hand",
   };
 }
@@ -33,7 +34,7 @@ const zhitheadModel = createModel(createInitialContext(), {
 });
 
 function hasChoosenAllFaceUpCards(context: ContextFrom<typeof zhitheadModel>) {
-  return context.me.offHand.faceUp.length === 3;
+  return context.human.offHand.faceUp.length === 3;
 }
 
 export enum States {
@@ -52,8 +53,8 @@ export const zhitheadMachine = zhitheadModel.createMachine({
       on: {
         PLAY_CARD: {
           actions: assign((context, event) => {
-            context.me.offHand.faceUp.push(context.me.hand[event.index]);
-            context.me.hand.splice(event.index, 1);
+            context.human.offHand.faceUp.push(context.human.hand[event.index]);
+            context.human.hand.splice(event.index, 1);
           }),
           target: States.choosingFaceUpCards,
           cond: (context) => !hasChoosenAllFaceUpCards(context),
@@ -70,9 +71,9 @@ export const zhitheadMachine = zhitheadModel.createMachine({
         PLAY_CARD: {
           actions: assign((context, event) => {
             const hands = [
-              context.me.hand,
-              context.me.offHand.faceUp,
-              context.me.offHand.faceDown,
+              context.human.hand,
+              context.human.offHand.faceUp,
+              context.human.offHand.faceDown,
             ];
             const hand = hands.find((cards) => cards.length);
             if (!hand) return;
@@ -83,7 +84,7 @@ export const zhitheadMachine = zhitheadModel.createMachine({
         TAKE_CARD: {
           actions: assign((context) => {
             const card = context.deck.pop();
-            if (card) context.me.hand.push(card);
+            if (card) context.human.hand.push(card);
           }),
         },
       },
