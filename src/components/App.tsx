@@ -2,8 +2,8 @@ import { useActor } from "@xstate/react";
 import { useContext } from "react";
 import { States } from "../state";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import ChoosingFaceUpCards from "./phases/ChoosingFaceUpCards";
-import Playing from "./phases/Playing";
+import ChoosingFaceUpCards from "./screens/ChoosingFaceUpCards";
+import Playing from "./screens/Playing";
 
 export default function App() {
   const globalServices = useContext(GlobalStateContext);
