@@ -6,7 +6,6 @@ export enum Suite {
 }
 
 export enum Rank {
-  Ace,
   Num2,
   Num3,
   Num4,
@@ -19,6 +18,7 @@ export enum Rank {
   Jack,
   Queen,
   King,
+  Ace,
 }
 
 export type Card = number;
@@ -66,6 +66,7 @@ function createSuites(): Suite[] {
 
 export type Cards = Card[];
 export type Deck = Cards;
+export type Pile = Cards;
 
 export function createDeck(): Deck {
   return createSuites().flatMap((suite) =>
@@ -100,4 +101,27 @@ export function dealCards(deck: Readonly<Deck>): [Deck, Player] {
   player.hand = deckCopy.splice(-STARTING_HAND_SIZE);
   player.offHand.faceDown = deckCopy.splice(-STARTING_FACEDOWN_SIZE);
   return [deckCopy, player];
+}
+
+export function dealCardsFor(
+  playerCount: number,
+  deck: Readonly<Deck>
+): [Deck, Player[]] {
+  let newDeck = deck.slice();
+  const players = [];
+  for (let i = 0; i <= playerCount; i++) {
+    let player;
+    [newDeck, player] = dealCards(newDeck);
+    players.push(player);
+  }
+  return [newDeck!, players];
+}
+
+export function canPlay(card: Readonly<Card>, pile: Readonly<Pile>): boolean {
+  const top = pile.at(-1);
+  if (!top) return true;
+  if (getRank(top) === Rank.Num8) return canPlay(card, pile.slice(0, -1));
+  if ([Rank.Num2, Rank.Num8].includes(getRank(card))) return true;
+  if (getRank(top) === Rank.Num7) return getRank(card) < getRank(top);
+  return getRank(card) >= getRank(top);
 }

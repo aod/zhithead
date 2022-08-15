@@ -5,8 +5,8 @@ import Deck from "../Deck";
 
 export default function Playing() {
   return (
-    <div className="flex h-full flex-col items-center justify-end gap-14 pb-10">
-      <div className="flex gap-16">
+    <div className="flex h-full flex-col justify-evenly gap-14">
+      <div className="flex gap-16 self-center">
         <Deck />
         <Pile />
       </div>

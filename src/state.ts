@@ -1,8 +1,7 @@
 import { assign } from "@xstate/immer";
 import { ContextFrom } from "xstate";
 import { createModel } from "xstate/lib/model";
-import { Card, createDeck, dealCards, Player } from "./lib";
-import { shuffle } from "./util";
+import { Card, createDeck, dealCardsFor, Player } from "./lib";
 
 type ShownHand = "hand" | "offhand";
 
@@ -10,17 +9,19 @@ interface ZhitheadContext {
   deck: Card[];
   pile: Card[];
   human: Player;
+  bot: Player;
   shownHand: ShownHand;
 }
 
 function createInitialContext(): ZhitheadContext {
   const shuffledDeck = shuffle(createDeck());
-  const [deck, human] = dealCards(shuffledDeck);
+  const [deck, [human, bot]] = dealCardsFor(2, shuffledDeck);
 
   return {
     deck,
     pile: [],
     human,
+    bot,
     shownHand: "hand",
   };
 }
@@ -32,10 +33,6 @@ const zhitheadModel = createModel(createInitialContext(), {
     TAKE_CARD: () => ({}),
   },
 });
-
-function hasChoosenAllFaceUpCards(context: ContextFrom<typeof zhitheadModel>) {
-  return context.human.offHand.faceUp.length === 3;
-}
 
 export enum States {
   choosingFaceUpCards = "choosingFaceUpCards",
@@ -91,3 +88,15 @@ export const zhitheadMachine = zhitheadModel.createMachine({
     },
   },
 });
+
+function hasChoosenAllFaceUpCards(context: ContextFrom<typeof zhitheadModel>) {
+  return context.human.offHand.faceUp.length === 3;
+}
+
+function shuffle<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}

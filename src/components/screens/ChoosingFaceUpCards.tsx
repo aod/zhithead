@@ -1,11 +1,11 @@
-import Hand from "../Hand";
+import HumanHand from "../HumanHand";
 import OffHand from "../OffHand";
 
 export default function ChoosingFaceUpCards() {
   return (
-    <div className="flex h-full flex-col justify-end gap-24 pb-10">
+    <div className="flex h-full flex-col justify-center gap-20">
       <OffHand />
-      <Hand />
+      <HumanHand />
     </div>
   );
 }
