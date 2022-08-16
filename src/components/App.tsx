@@ -26,7 +26,7 @@ export default function App() {
         </div>
         <div className="relative bottom-[calc(var(--card-height)*0.85)]">
           {state.matches(States.playing) && (
-            <div className="absolute -top-20 mx-auto w-full">
+            <div className="absolute -top-16 mx-auto w-full">
               <Switcher />
             </div>
           )}
