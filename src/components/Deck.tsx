@@ -2,6 +2,7 @@ import { useSelector } from "@xstate/react";
 import clsx from "clsx";
 import { useContext } from "react";
 import Card from "./Card";
+import Count from "./Count";
 import { GlobalStateContext } from "./GlobalStateProvider";
 
 export default function Deck() {
@@ -20,6 +21,7 @@ export default function Deck() {
         send({ type: "TAKE_CARD" });
       }}
     >
+      <Count count={deck.length} position="left" />
       {hasDeck && <Card flipped />}
       <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
         <span
