@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react";
+import { motion } from "framer-motion";
 import { useContext } from "react";
 import { States } from "../state";
 import Deck from "./Deck";
@@ -15,15 +16,25 @@ export default function App() {
   return (
     <main className="h-screen overflow-hidden bg-zinc-800">
       <div className="h-full">
-        <div className="flex h-full items-center justify-center gap-12">
-          {state.matches(States.choosingFaceUpCards) && <OffHand />}
-          {state.matches(States.playing) && (
-            <>
-              <Deck />
-              <Pile />
-            </>
-          )}
-        </div>
+        {state.matches(States.choosingFaceUpCards) && (
+          <motion.div
+            initial={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
+            className="flex h-full items-center justify-center"
+          >
+            <OffHand />
+          </motion.div>
+        )}
+        {state.matches(States.playing) && (
+          <motion.div
+            initial={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
+            className="flex h-full items-center justify-center gap-12"
+          >
+            <Deck />
+            <Pile />
+          </motion.div>
+        )}
         <div className="relative bottom-[calc(var(--card-height)*0.85)]">
           {state.matches(States.playing) && (
             <div className="absolute -top-16 mx-auto w-full">
