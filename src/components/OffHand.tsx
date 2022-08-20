@@ -13,8 +13,10 @@ export default function OffHand() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ y: 300 }}
+      animate={{ y: -50 }}
+      transition={{ duration: 0.2, type: "tween" }}
+      exit={{ y: 300 }}
       className="flex justify-center gap-2"
     >
       {[0, 1, 2].map((index) => (

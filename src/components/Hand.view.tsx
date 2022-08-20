@@ -38,7 +38,8 @@ export default function HandView(props: HandProps) {
       rotate: `${angle(i)}rad`,
     }),
     hidden: {
-      y: 400,
+      transition: { duration: 0.2 },
+      y: 300,
     },
   };
 
@@ -52,6 +53,7 @@ export default function HandView(props: HandProps) {
           custom={i}
           initial="hidden"
           animate="show"
+          exit="hidden"
           variants={variants}
           className="absolute"
           key={card}
