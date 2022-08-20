@@ -20,12 +20,14 @@ export default function OffHand() {
       {[0, 1, 2].map((index) => (
         <div key={offHand.faceUp[index] ?? `i${index}`}>
           <div className="relative h-card-height w-card-width">
-            {offHand.faceUp[index] !== undefined && (
-              <Card card={offHand.faceUp[index]} />
-            )}
-            <div className="absolute top-0">
+            <div className="absolute left-0 top-0">
               <Card flipped />
             </div>
+            {offHand.faceUp[index] !== undefined && (
+              <div className="absolute left-0 top-0">
+                <Card card={offHand.faceUp[index]} z={10} />
+              </div>
+            )}
           </div>
         </div>
       ))}

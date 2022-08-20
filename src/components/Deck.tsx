@@ -21,19 +21,25 @@ export default function Deck() {
         send({ type: "TAKE_CARD" });
       }}
     >
-      <Count count={deck.length} position="left" />
       {hasDeck && <Card flipped />}
-      <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
-        <span
-          className={clsx(
-            "select-none rounded-lg  text-4xl font-bold tracking-wider",
-            hasDeck && "bg-zinc-800/40 p-2 text-zinc-200",
-            !hasDeck && "text-zinc-600"
-          )}
-        >
-          DECK
-        </span>
-      </div>
+      <Count count={deck.length} position="left" />
+      <Text withBg={hasDeck} />
+    </div>
+  );
+}
+
+function Text(props: { withBg: boolean }) {
+  return (
+    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+      <span
+        className={clsx(
+          "select-none rounded-lg  text-4xl font-bold tracking-wider",
+          props.withBg && "bg-zinc-800/40 p-2 text-zinc-200",
+          !props.withBg && "text-zinc-600"
+        )}
+      >
+        DECK
+      </span>
     </div>
   );
 }

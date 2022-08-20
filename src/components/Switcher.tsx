@@ -27,21 +27,21 @@ export default function Switcher() {
           <Option
             onClick={() => send({ type: "SET_SHOWN_HAND", shownHand: "hand" })}
           >
-            <Count count={hand.length} position="left" />
             Hand
             {state.context.shownHand === "hand" && <Selected />}
+            <Count count={hand.length} position="left" />
           </Option>
           <Option
             onClick={() =>
               send({ type: "SET_SHOWN_HAND", shownHand: "offhand" })
             }
           >
+            Off-Hand
+            {state.context.shownHand === "offhand" && <Selected />}
             <Count
               count={offHand.faceDown.length + offHand.faceUp.length}
               position="right"
             />
-            Off-Hand
-            {state.context.shownHand === "offhand" && <Selected />}
           </Option>
         </LayoutGroup>
       </div>

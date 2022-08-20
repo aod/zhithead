@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { motion } from "framer-motion";
 import { Card as TCard, getRank, getSuite, Rank, Suite } from "../lib";
 
@@ -6,6 +5,7 @@ export interface CardProps {
   card?: TCard;
   flipped?: boolean;
   onClick?: (card: TCard | undefined) => void;
+  z?: number;
 }
 
 export default function Card(props: CardProps) {
@@ -18,11 +18,10 @@ export default function Card(props: CardProps) {
     <motion.img
       onClick={() => props.onClick?.(props.card)}
       layoutId={props.card?.toString()}
-      className={clsx(
-        `max-w-card-width relative h-full max-h-card-height w-full select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl`,
-        props.card !== undefined && "z-10"
-      )}
+      className="
+        max-w-card-width relative h-full max-h-card-height w-full select-none rounded-lg bg-white p-1 shadow-lg shadow-zinc-500/40 drop-shadow-xl"
       src={src}
+      style={{ zIndex: props.z ?? 0 }}
     />
   );
 }
