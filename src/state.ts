@@ -45,7 +45,7 @@ export const zhitheadMachine = zhitheadModel.createMachine({
   states: {
     [States.choosingFaceUpCards]: {
       after: {
-        200: { target: States.playing, cond: hasChoosenAllFaceUpCards },
+        500: { target: States.playing, cond: hasChoosenAllFaceUpCards },
       },
       on: {
         PLAY_CARD: {
