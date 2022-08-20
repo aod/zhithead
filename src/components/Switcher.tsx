@@ -2,7 +2,7 @@ import { LayoutGroup, motion } from "framer-motion";
 import { PropsWithChildren, useContext } from "react";
 import { useActor, useSelector } from "@xstate/react";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import clsx from "clsx";
+import Count from "./Count";
 
 export default function Switcher() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -46,20 +46,6 @@ export default function Switcher() {
         </LayoutGroup>
       </div>
     </motion.div>
-  );
-}
-
-function Count(props: { count: number; position: "left" | "right" }) {
-  return (
-    <div
-      className={clsx(
-        "absolute z-[1] flex h-8 w-8 items-center justify-center rounded-full bg-black p-2 text-xs text-zinc-200",
-        props.position === "left" && "-left-4 -top-4",
-        props.position === "right" && "-right-4 -top-4"
-      )}
-    >
-      {props.count}
-    </div>
   );
 }
 
