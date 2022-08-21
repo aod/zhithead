@@ -5,7 +5,7 @@ import { Cards } from "../lib";
 
 interface HandProps {
   hand: Cards;
-  onCardClick: (index: number) => void;
+  onCardClick?: (index: number) => void;
   hideCards?: boolean;
   flipped?: boolean;
 }
@@ -64,7 +64,7 @@ export default function HandView(props: HandProps) {
         >
           <Card
             card={card}
-            onClick={() => props.onCardClick(i)}
+            onClick={() => props.onCardClick?.(i)}
             flipped={props.hideCards}
           />
         </motion.div>

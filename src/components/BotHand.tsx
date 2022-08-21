@@ -4,16 +4,11 @@ import { GlobalStateContext } from "./GlobalStateProvider";
 import HandView from "./Hand.view";
 
 export default function BotHand() {
-  const globalServices = useContext(GlobalStateContext);
-  const hand = useSelector(
-    globalServices.zhitheadService,
-    (state) => state.context.bot.hand
-  );
-  const { send } = globalServices.zhitheadService;
+  const { zhitheadService } = useContext(GlobalStateContext);
+  const hand = useSelector(zhitheadService, (state) => state.context.bot.hand);
 
   return createElement(HandView, {
     hand,
-    onCardClick: (index) => send({ type: "PLAY_CARD", index }),
     hideCards: true,
     flipped: true,
   });
