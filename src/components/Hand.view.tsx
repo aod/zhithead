@@ -31,22 +31,23 @@ export default function HandView(props: HandProps) {
     return x * (Math.PI / factor);
   }
 
+  const flippedSign = props.flipped ? -1 : 1;
   const variants: Variants = {
     show: (i: number) => ({
-      y: virtualFanHeight * (1 - Math.cos(angle(i))),
+      y: virtualFanHeight * (1 - Math.cos(angle(i))) * flippedSign,
       x: virtualFanWidth * Math.sin(angle(i)),
-      rotate: `${angle(i)}rad`,
+      rotate: `${angle(i) * flippedSign}rad`,
     }),
     hidden: {
       transition: { duration: 0.2 },
-      y: 300,
+      y: 300 * flippedSign,
     },
   };
 
   return (
     <div
       ref={ref}
-      className="relative flex h-card-height w-full justify-center"
+      className="flex h-full max-h-card-height w-full justify-center"
     >
       {props.hand.map((card, i) => (
         <motion.div
@@ -57,7 +58,9 @@ export default function HandView(props: HandProps) {
           variants={variants}
           className="absolute"
           key={card}
-          style={{ transformOrigin: "center bottom" }}
+          style={{
+            transformOrigin: props.flipped ? "center top" : "center bottom",
+          }}
         >
           <Card
             card={card}

@@ -3,7 +3,7 @@ import { createElement, useContext } from "react";
 import { GlobalStateContext } from "./GlobalStateProvider";
 import HandView from "./Hand.view";
 
-export default function HumanHand() {
+export default function BotHand() {
   const globalServices = useContext(GlobalStateContext);
   const hand = useSelector(
     globalServices.zhitheadService,

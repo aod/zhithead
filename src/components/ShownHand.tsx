@@ -1,4 +1,5 @@
 import { useSelector } from "@xstate/react";
+import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { GlobalStateContext } from "./GlobalStateProvider";
@@ -14,7 +15,14 @@ export default function ShownHand() {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={shownHand}>
+      <motion.div
+        key={shownHand}
+        className={clsx(
+          "absolute h-card-height w-full",
+          shownHand === "hand" && "-bottom-5",
+          shownHand === "offhand" && "bottom-4 flex justify-center"
+        )}
+      >
         {shownHand === "hand" && <HumanHand />}
         {shownHand === "offhand" && <OffHand />}
       </motion.div>
