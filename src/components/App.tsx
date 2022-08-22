@@ -2,13 +2,14 @@ import { useActor } from "@xstate/react";
 import { motion } from "framer-motion";
 import { useContext } from "react";
 import { States } from "../state";
-import BotHand from "./BotHand";
 import Deck from "./Deck";
 import { GlobalStateContext } from "./GlobalStateProvider";
-import OffHand from "./OffHand";
+import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
-import ShownHand from "./ShownHand";
-import Switcher from "./Switcher";
+import HumanShownHand from "./HumanShownHand";
+import HumanSwitcher from "./HumanSwitcher";
+import BotShownHand from "./BotShownHand";
+import BotSwitcher from "./BotSwitcher";
 
 export default function App() {
   const globalServices = useContext(GlobalStateContext);
@@ -16,8 +17,15 @@ export default function App() {
 
   return (
     <main className="grid h-screen grid-rows-3 overflow-hidden bg-zinc-800">
-      <div className="relative -top-5">
-        {state.matches(States.playing) && <BotHand />}
+      <div className="relative">
+        {state.matches(States.playing) && (
+          <>
+            <BotShownHand />
+            <div className="absolute top-2 z-10 mx-auto w-full">
+              <BotSwitcher />
+            </div>
+          </>
+        )}
       </div>
 
       {state.matches(States.choosingFaceUpCards) && (
@@ -26,7 +34,7 @@ export default function App() {
           animate={{ opacity: 1 }}
           className="m-auto"
         >
-          <OffHand />
+          <HumanOffHand />
         </motion.div>
       )}
       {state.matches(States.playing) && (
@@ -41,8 +49,12 @@ export default function App() {
       )}
 
       <div className="relative pt-4">
-        {state.matches(States.playing) && <Switcher />}
-        <ShownHand />
+        {state.matches(States.playing) && (
+          <div className="absolute bottom-2 z-10 mx-auto w-full">
+            <HumanSwitcher />
+          </div>
+        )}
+        <HumanShownHand />
       </div>
     </main>
   );

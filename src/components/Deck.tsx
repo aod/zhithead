@@ -22,7 +22,7 @@ export default function Deck() {
       }}
     >
       {hasDeck && <Card flipped />}
-      <Count count={deck.length} position="left" />
+      <Count count={deck.length} position="top-left" />
       <Text withBg={hasDeck} />
     </div>
   );

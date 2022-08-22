@@ -1,35 +1,47 @@
 import { assign } from "@xstate/immer";
 import { ContextFrom } from "xstate";
 import { createModel } from "xstate/lib/model";
-import { Card, createDeck, dealCardsFor, Player } from "./lib";
+import { Card, createDeck, dealCardsFor, Player as TPlayer } from "./lib";
 
-type ShownHand = "hand" | "offhand";
+type Player = "bot" | "human";
+export type ShownHand = "hand" | "offhand";
 
 interface ZhitheadContext {
   deck: Card[];
   pile: Card[];
-  human: Player;
-  bot: Player;
-  shownHand: ShownHand;
+  human: TPlayer;
+  bot: TPlayer;
+  shownHand: {
+    human: ShownHand;
+    bot: ShownHand;
+  };
 }
 
 function createInitialContext(): ZhitheadContext {
   const shuffledDeck = shuffle(createDeck());
   const [deck, [human, bot]] = dealCardsFor(2, shuffledDeck);
 
+  bot.offHand.faceUp = bot.hand.splice(0, 3);
+
   return {
     deck,
     pile: [],
     human,
     bot,
-    shownHand: "hand",
+    shownHand: {
+      human: "hand",
+      bot: "hand",
+    },
   };
 }
 
 const zhitheadModel = createModel(createInitialContext(), {
   events: {
     PLAY_CARD: (index: number) => ({ index }),
-    SET_SHOWN_HAND: (shownHand: ShownHand) => ({ shownHand }),
+    SET_SHOWN_HAND: (player: Player, shownHand: ShownHand) => ({
+      shownHand,
+      player,
+    }),
     TAKE_CARD: () => ({}),
   },
 });
@@ -62,7 +74,7 @@ export const zhitheadMachine = zhitheadModel.createMachine({
       on: {
         SET_SHOWN_HAND: {
           actions: assign((context, event) => {
-            context.shownHand = event.shownHand;
+            context.shownHand[event.player] = event.shownHand;
           }),
         },
         PLAY_CARD: {

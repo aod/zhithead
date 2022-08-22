@@ -18,10 +18,10 @@ export default function Pile() {
       )}
       {pile.length >= 1 && (
         <div className="absolute">
-          <Card key={pile.length} card={pile.at(-1)} z={2} />
+          <Card key={pile.length} card={pile.at(-1)} z={1} />
         </div>
       )}
-      <Count count={pile.length} position="left" z={3} />
+      <Count count={pile.length} position="top-left" z={2} />
       <AnimatePresence>{!pile.length && <Text />}</AnimatePresence>
     </div>
   );

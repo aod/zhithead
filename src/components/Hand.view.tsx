@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import Card from "./Card";
 import { Cards } from "../lib";
 
-interface HandProps {
+export interface HandViewProps {
   hand: Cards;
   onCardClick?: (index: number) => void;
   hideCards?: boolean;
   flipped?: boolean;
 }
 
-export default function HandView(props: HandProps) {
+export default function HandView(props: HandViewProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [handWidth, setHandWidth] = useState(0);
   const virtualFanWidth = Math.min(handWidth, props.hand.length * 100);
