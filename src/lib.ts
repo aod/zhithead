@@ -1,8 +1,8 @@
 export enum Suite {
-  Clubs,
-  Diamonds,
-  Hearts,
   Spades,
+  Diamonds,
+  Clubs,
+  Hearts,
 }
 
 export enum Rank {
@@ -109,7 +109,7 @@ export function dealCardsFor(
 ): [Deck, Player[]] {
   let newDeck = deck.slice();
   const players = [];
-  for (let i = 0; i <= playerCount; i++) {
+  for (let i = 0; i < playerCount; i++) {
     let player;
     [newDeck, player] = dealCards(newDeck);
     players.push(player);
