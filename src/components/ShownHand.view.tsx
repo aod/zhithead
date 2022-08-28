@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShownHand } from "../state";
+import { ShownHand } from "../state/machines/zhithead.machine";
 import HandView, { HandViewProps } from "./Hand.view";
 import OffHandView, { OffHandViewProps } from "./OffHand.view";
 

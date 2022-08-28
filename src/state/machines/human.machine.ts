@@ -1,0 +1,32 @@
+import { createMachine } from "xstate";
+import { sendParent } from "xstate/lib/actions";
+import { Card } from "../../lib";
+import { PlayerEvents } from "../shared/player-events";
+
+type HumanEvents =
+  | { type: "ASK_PICK_CARD" }
+  | { type: "CHOOSE_CARD"; card: Card };
+
+const humanMachine = createMachine<null, HumanEvents>({
+  id: "human",
+  initial: "idle",
+  states: {
+    idle: {
+      on: {
+        ASK_PICK_CARD: { target: "waitingForHuman" },
+      },
+    },
+    waitingForHuman: {
+      on: {
+        CHOOSE_CARD: {
+          actions: sendParent((_, event) =>
+            PlayerEvents["CARD_CHOSEN"](event.card)
+          ),
+          target: "idle",
+        },
+      },
+    },
+  },
+});
+
+export default humanMachine;

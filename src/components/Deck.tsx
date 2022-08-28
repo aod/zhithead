@@ -21,7 +21,7 @@ export default function Deck() {
         send({ type: "TAKE_CARD" });
       }}
     >
-      {hasDeck && <Card flipped />}
+      {hasDeck && <Card key={deck.length} card={deck.at(-1)} flipped />}
       <Count count={deck.length} position="top-left" />
       <Text withBg={hasDeck} />
     </div>

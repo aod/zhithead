@@ -1,7 +1,7 @@
 import { LayoutGroup, motion } from "framer-motion";
 import { PropsWithChildren, useId } from "react";
 import Count from "./Count";
-import { ShownHand } from "../state";
+import { ShownHand } from "../state/machines/zhithead.machine";
 
 interface SwitcherViewProps {
   handCount: number;

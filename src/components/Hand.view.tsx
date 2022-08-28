@@ -1,11 +1,11 @@
 import { motion, Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Card from "./Card";
-import { Cards } from "../lib";
+import { Cards, Card as TCard } from "../lib";
 
 export interface HandViewProps {
   hand: Cards;
-  onCardClick?: (index: number) => void;
+  onCardClick?: (card: TCard, index: number) => void;
   hideCards?: boolean;
   flipped?: boolean;
 }
@@ -58,13 +58,14 @@ export default function HandView(props: HandViewProps) {
           variants={variants}
           className="absolute"
           key={card}
+          transition={{ type: "tween" }}
           style={{
             transformOrigin: props.flipped ? "center top" : "center bottom",
           }}
         >
           <Card
             card={card}
-            onClick={() => props.onCardClick?.(i)}
+            onClick={() => props.onCardClick?.(card, i)}
             flipped={props.hideCards}
           />
         </motion.div>

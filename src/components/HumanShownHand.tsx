@@ -19,11 +19,16 @@ export default function HumanShownHand() {
     (state) => state.context.human.offHand
   );
 
-  const { send } = zhitheadService;
+  // TODO: Is this the correct way to access services?
+  const human = useSelector(zhitheadService, (state) => state.children.human);
+  const { send } = human;
 
   return createElement(ShownHandView, {
     shownHand: shownHand,
-    hand: { hand, onCardClick: (index) => send({ type: "PLAY_CARD", index }) },
+    hand: {
+      hand,
+      onCardClick: (card) => send({ type: "CHOOSE_CARD", card }),
+    },
     offHand: { offHand },
   });
 }

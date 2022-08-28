@@ -1,7 +1,7 @@
 import { useActor } from "@xstate/react";
 import { motion } from "framer-motion";
 import { useContext } from "react";
-import { States } from "../state";
+import { States } from "../state/machines/zhithead.machine";
 import Deck from "./Deck";
 import { GlobalStateContext } from "./GlobalStateProvider";
 import HumanOffHand from "./HumanOffHand";

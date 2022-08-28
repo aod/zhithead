@@ -42,6 +42,10 @@ export function getRank(card: Readonly<Card>): Rank {
   return (card >> SUITE_BIN_WIDTH) & _1s(RANK_BIN_WIDTH);
 }
 
+export function cardToString(card: Readonly<Card>) {
+  return `${Suite[getSuite(card)]}-${[Rank[getRank(card)]]}`;
+}
+
 function createRanks(): Rank[] {
   return [
     Rank.Ace,
@@ -117,11 +121,21 @@ export function dealCardsFor(
   return [newDeck!, players];
 }
 
-export function canPlay(card: Readonly<Card>, pile: Readonly<Pile>): boolean {
+function topCard(pile: Readonly<Pile>): Card | undefined {
   const top = pile.at(-1);
-  if (!top) return true;
-  if (getRank(top) === Rank.Num8) return canPlay(card, pile.slice(0, -1));
+  if (top === undefined) return;
+  if (getRank(top) === Rank.Num8) return topCard(pile.slice(0, -1));
+  return top;
+}
+
+export function canPlay(card: Readonly<Card>, pile: Readonly<Pile>): boolean {
+  const top = topCard(pile);
+  if (top === undefined) return true;
   if ([Rank.Num2, Rank.Num8].includes(getRank(card))) return true;
   if (getRank(top) === Rank.Num7) return getRank(card) < getRank(top);
   return getRank(card) >= getRank(top);
+}
+
+export function playableCards(pile: Readonly<Pile>): Rank[] {
+  return createDeck().filter((card) => canPlay(card, pile));
 }
