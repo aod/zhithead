@@ -6,10 +6,8 @@ import Deck from "./Deck";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
-import HumanShownHand from "./HumanShownHand";
-import HumanSwitcher from "./HumanSwitcher";
-import BotShownHand from "./BotShownHand";
-import BotSwitcher from "./BotSwitcher";
+import ShownHand from "./ShownHand";
+import Switcher from "./Switcher";
 
 export default function App() {
   const globalServices = useContext(GlobalStateContext);
@@ -20,9 +18,9 @@ export default function App() {
       <div className="relative">
         {state.matches(States.playing) && (
           <>
-            <BotShownHand />
+            <ShownHand player="bot" />
             <div className="absolute top-2 z-10 mx-auto w-full">
-              <BotSwitcher />
+              <Switcher player="bot" />
             </div>
           </>
         )}
@@ -51,10 +49,10 @@ export default function App() {
       <div className="relative pt-4">
         {state.matches(States.playing) && (
           <div className="absolute bottom-2 z-10 mx-auto w-full">
-            <HumanSwitcher />
+            <Switcher player="human" />
           </div>
         )}
-        <HumanShownHand />
+        <ShownHand player="human" />
       </div>
     </main>
   );

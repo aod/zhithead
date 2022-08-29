@@ -17,7 +17,7 @@ import humanMachine from "./human.machine";
 import { PlayerEvents, barePlayerEvent } from "../shared/player-events";
 import { createBotService } from "../services/bot.service";
 
-type Player = "bot" | "human";
+export type Player = "bot" | "human";
 export type ShownHand = "hand" | "offhand";
 
 interface ZhitheadContext {

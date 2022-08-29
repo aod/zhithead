@@ -1,28 +1,33 @@
 import { createElement, useContext } from "react";
 import { useSelector } from "@xstate/react";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
-import Switcher from "./ui/Switcher";
+import UISwitcher from "./ui/Switcher";
 import { offHandLen } from "../lib";
+import { Player } from "../state/machines/zhithead.machine";
 
-export default function HumanSwitcher() {
+interface SwitcherProps {
+  player: Player;
+}
+
+export default function Switcher(props: SwitcherProps) {
   const { zhitheadService } = useContext(GlobalStateContext);
 
   const hand = useSelector(
     zhitheadService,
-    (state) => state.context.human.hand
+    (state) => state.context[props.player].hand
   );
   const offHand = useSelector(
     zhitheadService,
-    (state) => state.context.human.offHand
+    (state) => state.context[props.player].offHand
   );
   const shownHand = useSelector(
     zhitheadService,
-    (state) => state.context.shownHand.human
+    (state) => state.context.shownHand[props.player]
   );
 
   const { send } = zhitheadService;
 
-  return createElement(Switcher, {
+  return createElement(UISwitcher, {
     left: ["Hand", hand.length],
     right: [
       "Off-Hand",
@@ -33,8 +38,8 @@ export default function HumanSwitcher() {
       send({
         type: "SET_SHOWN_HAND",
         shownHand: val === "left" ? "hand" : "offhand",
-        player: "human",
+        player: props.player,
       }),
-    position: "bottom",
+    position: props.player === "human" ? "bottom" : "top",
   });
 }
