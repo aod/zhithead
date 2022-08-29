@@ -2,6 +2,7 @@ import { useSelector } from "@xstate/react";
 import clsx from "clsx";
 import { useContext } from "react";
 import Card from "./Card";
+import CardHolder from "./CardHolder";
 import Count from "./Count";
 import { GlobalStateContext } from "./GlobalStateProvider";
 
@@ -11,20 +12,14 @@ export default function Deck() {
     globalServices.zhitheadService,
     (state) => state.context.deck
   );
-  const { send } = globalServices.zhitheadService;
   const hasDeck = Boolean(deck.length);
 
   return (
-    <div
-      className="relative box-content h-card-height w-card-width rounded-xl border-2 border-dashed border-zinc-600 p-0.5"
-      onClick={() => {
-        send({ type: "TAKE_CARD" });
-      }}
-    >
+    <CardHolder>
       {hasDeck && <Card key={deck.length} card={deck.at(-1)} flipped />}
       <Count count={deck.length} position="top-left" />
       <Text withBg={hasDeck} />
-    </div>
+    </CardHolder>
   );
 }
 

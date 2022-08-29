@@ -1,10 +1,15 @@
 import { motion } from "framer-motion";
-import { Player } from "../lib";
+import { Card as TCard, Player } from "../lib";
 import Card from "./Card";
+import CardHolder from "./CardHolder";
+
+type Position = 0 | 1 | 2;
 
 export interface OffHandViewProps {
   offHand: Player["offHand"];
   flipped?: boolean;
+  onCardPositionedClick?: (card: TCard, position: Position) => void;
+  grayOutFaceUpCard?: (card: TCard, position: Position) => boolean;
 }
 
 export default function OffHandView(props: OffHandViewProps) {
@@ -19,19 +24,37 @@ export default function OffHandView(props: OffHandViewProps) {
       className="flex justify-center space-x-4"
     >
       {[0, 1, 2].map((index) => (
-        <div
-          key={index}
-          className="relative inline-block h-card-height w-card-width"
-        >
-          <div className="absolute left-0 top-0">
-            <Card flipped />
-          </div>
-          {props.offHand.faceUp[index] !== undefined && (
-            <div className="absolute left-0 top-0">
-              <Card card={props.offHand.faceUp[index]} z={1} />
+        <CardHolder key={index}>
+          {props.offHand.faceDown[index] !== undefined && (
+            <div className="absolute">
+              <Card
+                flipped
+                card={props.offHand.faceDown[index]}
+                onClick={(card) =>
+                  props.onCardPositionedClick?.(card!, index as Position)
+                }
+              />
             </div>
           )}
-        </div>
+          {props.offHand.faceUp[index] !== undefined && (
+            <div className="absolute">
+              <Card
+                card={props.offHand.faceUp[index]}
+                z={1}
+                onClick={() =>
+                  props.onCardPositionedClick?.(
+                    props.offHand.faceUp[index]!,
+                    index as Position
+                  )
+                }
+                grayOut={props.grayOutFaceUpCard?.(
+                  props.offHand.faceUp[index]!,
+                  index as Position
+                )}
+              />
+            </div>
+          )}
+        </CardHolder>
       ))}
     </motion.div>
   );

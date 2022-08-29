@@ -1,12 +1,15 @@
 import { assign } from "@xstate/immer";
-import { ContextFrom, send } from "xstate";
+import { ContextFrom, EventFrom, send } from "xstate";
 import { createModel } from "xstate/lib/model";
 import {
-  canPlay,
+  canPlay as _canPlay,
   Card,
+  Cards,
   createDeck,
   dealCardsFor,
   getRank,
+  isPlayerCurHand,
+  OffHandCards,
   Player as TPlayer,
   Rank,
 } from "../../lib";
@@ -31,9 +34,10 @@ interface ZhitheadContext {
 
 function createInitialContext(): ZhitheadContext {
   const shuffledDeck = shuffle(createDeck());
+  shuffledDeck.splice(0, 34);
   const [deck, [human, bot]] = dealCardsFor(2, shuffledDeck);
 
-  bot.offHand.faceUp = bot.hand.splice(0, 3);
+  bot.offHand.faceUp = bot.hand.splice(0, 3) as OffHandCards;
 
   return {
     deck,
@@ -103,28 +107,30 @@ export const zhitheadMachine = zhitheadModel.createMachine(
             id: "loop",
             states: {
               waitForMove: {
-                entry: send(
-                  (context) =>
-                    PlayerEvents["ASK_PICK_CARD"](
-                      context.pile,
-                      context[context.currentTurn]
-                    ),
-                  { to: (ctx) => ctx.currentTurn }
-                ),
+                entry: [
+                  send(
+                    (context) =>
+                      PlayerEvents["ASK_PICK_CARD"](
+                        context.pile,
+                        context[context.currentTurn]
+                      ),
+                    { to: (ctx) => ctx.currentTurn }
+                  ),
+                  "changeSwitcher",
+                ],
                 on: {
                   CARD_CHOSEN: [
                     {
                       target: "#loop.waitForMove",
-                      actions: ["takePile", "switchTurns"],
+                      actions: ["takePile", "changeSwitcher", "switchTurns"],
                       // Bot returns undefined when no cards could be played.
                       // event.card from human should never be null.
                       cond: (_, event) => event.card === undefined,
                     },
                     {
-                      target: "#loop.beforeNewMove",
+                      target: "#loop.afterPlay",
                       actions: "play",
-                      cond: (context, event) =>
-                        canPlay(event.card!, context.pile),
+                      cond: canPlay,
                     },
                     {
                       target: "#loop.waitForMove", // Ask again
@@ -132,15 +138,25 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                   ],
                   TAKE_PILE: {
                     target: "#loop.waitForMove",
-                    actions: ["takePile", "switchTurns"],
+                    actions: [
+                      assign((context) => (context.shownHand.human = "hand")),
+                      "takePile",
+                      "switchTurns",
+                    ],
                     cond: (context) =>
                       context.currentTurn === "human" &&
-                      !canCurrentPlayerPlayCard(context),
+                      (!_canPlay(
+                        context.pile.at(-1)!,
+                        context.pile.slice(0, -1)
+                      ) ||
+                        !canCurrentPlayerPlayCard(context)),
                   },
                 },
               },
-              beforeNewMove: {
+              afterPlay: {
+                entry: "changeSwitcher",
                 after: {
+                  300: { actions: "changeSwitcher" },
                   600: {
                     actions: "burnPile",
                     cond: {
@@ -148,13 +164,49 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                       rank: Rank.Num10,
                     },
                   },
-                  625: {
+                  700: {
                     actions: "takeCard",
+                    cond: (context) =>
+                      context[context.currentTurn].hand.length <= 3,
                   },
-                  1000: {
-                    actions: ["switchTurns"],
-                    target: "#loop.waitForMove",
-                  },
+                  1000: [
+                    {
+                      actions: ["switchTurns"],
+                      target: "#loop.waitForMove",
+                      cond: (context) =>
+                        isPlayerCurHand(
+                          context[context.currentTurn],
+                          "hand",
+                          "faceUp"
+                        ),
+                    },
+                    {
+                      target: "#loop.waitForMove",
+                      cond: (context) =>
+                        context.currentTurn === "human" &&
+                        context.pile.length > 0 &&
+                        !_canPlay(
+                          context.pile.at(-1)!,
+                          context.pile.slice(0, -1)
+                        ),
+                    },
+                    {
+                      actions: ["takePile", "switchTurns"],
+                      target: "#loop.waitForMove",
+                      cond: (context) =>
+                        context.currentTurn === "bot" &&
+                        context.pile.length > 0 &&
+                        !_canPlay(
+                          context.pile.at(-1)!,
+                          context.pile.slice(0, -1)
+                        ),
+                    },
+                    {
+                      actions: "switchTurns",
+                      target: "#loop.waitForMove",
+                    },
+                  ],
+                  1300: { actions: "changeSwitcher" },
                 },
               },
             },
@@ -186,14 +238,20 @@ export const zhitheadMachine = zhitheadModel.createMachine(
       }),
       play: assign((context, event) => {
         if (event.type !== "CARD_CHOSEN") return;
-        const hand = [
-          context[context.currentTurn].hand,
-          context[context.currentTurn].offHand.faceUp,
-          context[context.currentTurn].offHand.faceDown,
-        ].find((hand) => hand.length);
-        if (!hand) return;
         context.pile.push(event.card!);
-        hand.splice(hand.indexOf(event.card!), 1);
+        if (context[context.currentTurn].hand.length) {
+          const hand = context[context.currentTurn].hand;
+          hand.splice(hand.indexOf(event.card!), 1);
+        } else {
+          const hands = [
+            context[context.currentTurn].offHand.faceUp,
+            context[context.currentTurn].offHand.faceDown,
+          ];
+          const hand = hands.find((hand) =>
+            hand.some((card) => card !== undefined)
+          );
+          if (hand) hand[hand.indexOf(event.card!)] = undefined;
+        }
       }),
       takePile: assign((context) => {
         context[context.currentTurn].hand = [
@@ -208,6 +266,13 @@ export const zhitheadMachine = zhitheadModel.createMachine(
       }),
       burnPile: assign((context) => {
         context.pile = [];
+      }),
+      changeSwitcher: assign((context) => {
+        if (context[context.currentTurn].hand.length) {
+          context.shownHand[context.currentTurn] = "hand";
+        } else {
+          context.shownHand[context.currentTurn] = "offhand";
+        }
       }),
     },
     guards: {
@@ -234,14 +299,35 @@ function canCurrentPlayerPlayCard(
 ): boolean {
   const hands = [
     context[context.currentTurn].hand,
-    context[context.currentTurn].offHand.faceUp,
-    context[context.currentTurn].offHand.faceDown,
+    context[context.currentTurn].offHand.faceUp.filter(
+      (card) => card !== undefined
+    ) as Cards,
   ];
-  const handIndex = hands.findIndex((hand) => hand.length);
-  if (handIndex === -1) return false;
+  const hand = hands.find((hand) => hand.length);
+  if (hand !== undefined) {
+    return hand.some((card) => _canPlay(card, context.pile));
+  }
+  return true;
+}
 
-  const hand = hands[handIndex];
-  if (handIndex < 2) return hand.some((card) => canPlay(card, context.pile));
+function canPlay(
+  context: ContextFrom<typeof zhitheadModel>,
+  event: EventFrom<typeof zhitheadModel>
+): boolean {
+  if (event.type !== "CARD_CHOSEN") return false;
+  const hands = [
+    context[context.currentTurn].hand,
+    context[context.currentTurn].offHand.faceUp.filter(
+      (card) => card !== undefined
+    ),
+  ];
+  const firstNonEmptyVisibleHand = hands.find((hand) => hand.length);
+  if (firstNonEmptyVisibleHand !== undefined) {
+    return (
+      firstNonEmptyVisibleHand.includes(event.card!) &&
+      _canPlay(event.card!, context.pile)
+    );
+  }
   return true;
 }
 

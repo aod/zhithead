@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { getRank, Rank } from "../lib";
 import Card from "./Card";
+import CardHolder from "./CardHolder";
 import Count from "./Count";
 import { GlobalStateContext } from "./GlobalStateProvider";
 
@@ -13,7 +14,7 @@ export default function Pile() {
   const pileWithout8s = pile.filter((card) => getRank(card) !== Rank.Num8);
 
   return (
-    <div className="relative box-content flex h-card-height w-card-width justify-center rounded-xl border-2 border-dashed border-zinc-600 p-0.5">
+    <CardHolder>
       {pileWithout8s.length >= 2 && (
         <div className="absolute">
           <Card card={pileWithout8s.at(-2)} />
@@ -57,7 +58,7 @@ export default function Pile() {
       </AnimatePresence>
       <Count count={pile.length} position="top-left" z={2} />
       <AnimatePresence>{!pile.length && <Text />}</AnimatePresence>
-    </div>
+    </CardHolder>
   );
 }
 

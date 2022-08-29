@@ -1,26 +1,17 @@
 import { Card, Cards, getRank, Pile, playableCards, Player } from "./lib";
 
 export function bot(pile: Pile, player: Player): Card | undefined {
-  const visibleHand = [player.hand, player.offHand.faceUp].find(
-    (hand) => hand.length
-  );
+  const visibleHand = [
+    player.hand,
+    player.offHand.faceUp.filter((card) => card !== undefined) as Cards,
+  ].find((hand) => hand.length);
   if (visibleHand !== undefined) {
     const playable = playableCards(pile);
     const choice = visibleHand.filter((card) =>
       playable.some((playableCard) => getRank(playableCard) === getRank(card))
     );
-    return lowest(choice);
+    if (!choice.length) return;
+    return choice[Math.floor(Math.random() * choice.length)];
   }
-  if (player.offHand.faceDown.length) {
-    const faceDown = player.offHand.faceDown;
-    return faceDown[Math.floor(Math.random() * faceDown.length)];
-  }
-}
-
-function sortAsc(cards: Cards): Cards {
-  return cards.slice().sort((a, b) => getRank(a) - getRank(b));
-}
-
-function lowest(cards: Cards): Card | undefined {
-  return sortAsc(cards).at(0);
+  return player.offHand.faceDown.find((card) => card !== undefined);
 }

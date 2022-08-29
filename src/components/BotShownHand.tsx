@@ -1,5 +1,6 @@
 import { useSelector } from "@xstate/react";
 import { createElement, useContext } from "react";
+import { canPlay } from "../lib";
 import { GlobalStateContext } from "./GlobalStateProvider";
 import ShownHandView from "./ShownHand.view";
 
@@ -15,6 +16,7 @@ export default function BotShownHand() {
     zhitheadService,
     (state) => state.context.bot.offHand
   );
+  const pile = useSelector(zhitheadService, (state) => state.context.pile);
 
   return createElement(ShownHandView, {
     shownHand: shownHand,
@@ -23,7 +25,11 @@ export default function BotShownHand() {
       flipped: true,
       hideCards: true,
     },
-    offHand: { offHand, flipped: true },
+    offHand: {
+      offHand,
+      flipped: true,
+      grayOutFaceUpCard: (card) => !!hand.length || !canPlay(card, pile),
+    },
     flipped: true,
   });
 }

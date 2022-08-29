@@ -78,11 +78,13 @@ export function createDeck(): Deck {
   );
 }
 
+export type OffHandCards = [Card?, Card?, Card?];
+
 export interface Player {
   hand: Cards;
   offHand: {
-    faceDown: Cards;
-    faceUp: Cards;
+    faceDown: OffHandCards;
+    faceUp: OffHandCards;
   };
 }
 
@@ -96,6 +98,31 @@ export function makePlayer(): Player {
   };
 }
 
+const handKinds = ["hand", "faceUp", "faceDown"] as const;
+type HandKind = typeof handKinds[number];
+
+export function offHandLen(cards: OffHandCards) {
+  return cards.filter((card) => card !== undefined).length;
+}
+
+export function playerHandLen(player: Player, kind: HandKind) {
+  switch (kind) {
+    case "hand":
+      return player.hand.length;
+    case "faceDown":
+    case "faceUp":
+      return offHandLen(player.offHand[kind]);
+  }
+}
+
+function playerCurHand(player: Player): HandKind | undefined {
+  return handKinds.find((kind) => playerHandLen(player, kind) > 0);
+}
+
+export function isPlayerCurHand(player: Player, ...kinds: HandKind[]) {
+  return kinds.some((kind) => playerCurHand(player) === kind);
+}
+
 const STARTING_HAND_SIZE = 6;
 const STARTING_FACEDOWN_SIZE = 3;
 
@@ -103,7 +130,9 @@ export function dealCards(deck: Readonly<Deck>): [Deck, Player] {
   const deckCopy = deck.slice();
   const player = makePlayer();
   player.hand = deckCopy.splice(-STARTING_HAND_SIZE);
-  player.offHand.faceDown = deckCopy.splice(-STARTING_FACEDOWN_SIZE);
+  player.offHand.faceDown = deckCopy.splice(
+    -STARTING_FACEDOWN_SIZE
+  ) as OffHandCards;
   return [deckCopy, player];
 }
 

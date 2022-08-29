@@ -32,6 +32,10 @@ export default function HumanShownHand() {
       onCardClick: (card) => send({ type: "CHOOSE_CARD", card }),
       grayOut: (card) => !canPlay(card, pile),
     },
-    offHand: { offHand },
+    offHand: {
+      offHand,
+      onCardPositionedClick: (card) => send({ type: "CHOOSE_CARD", card }),
+      grayOutFaceUpCard: (card) => !!hand.length || !canPlay(card, pile),
+    },
   });
 }

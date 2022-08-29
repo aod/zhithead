@@ -26,7 +26,7 @@ export default function Card(props: CardProps) {
       }}
       className={clsx(
         "relative h-card-height w-card-width select-none shadow-lg shadow-zinc-500/40 drop-shadow-xl",
-        isFace && "rounded-xl border-white bg-white p-1"
+        isFace && "rounded-lg border-white bg-white p-1"
       )}
       src={src}
       style={{ zIndex: props.z ?? "unset" }}
