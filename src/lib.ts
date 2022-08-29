@@ -129,9 +129,9 @@ function topCard(pile: Readonly<Pile>): Card | undefined {
 }
 
 export function canPlay(card: Readonly<Card>, pile: Readonly<Pile>): boolean {
+  if ([Rank.Num2, Rank.Num8].includes(getRank(card))) return true;
   const top = topCard(pile);
   if (top === undefined) return true;
-  if ([Rank.Num2, Rank.Num8].includes(getRank(card))) return true;
   if (getRank(top) === Rank.Num7) return getRank(card) < getRank(top);
   return getRank(card) >= getRank(top);
 }
