@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/react";
 import { createElement, useContext } from "react";
 import { canPlay } from "../lib";
-import { GlobalStateContext } from "./GlobalStateProvider";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import ShownHandView from "./ShownHand.view";
 
 export default function HumanShownHand() {

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { Card as TCard, getRank, getSuite, Rank, Suite } from "../lib";
+import { Card as TCard, getRank, getSuite, Rank, Suite } from "../../lib";
 
 export interface CardProps {
   card?: TCard;

@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShownHand } from "../state/machines/zhithead.machine";
-import HandView, { HandViewProps } from "./Hand.view";
-import OffHandView, { OffHandViewProps } from "./OffHand.view";
+import Hand, { HandProps } from "./ui/Hand";
+import OffHand, { OffHandProps } from "./ui/OffHand";
 
 interface ShownHandViewProps {
   shownHand: ShownHand;
-  hand: HandViewProps;
-  offHand: OffHandViewProps;
+  hand: HandProps;
+  offHand: OffHandProps;
   flipped?: boolean;
 }
 
@@ -24,8 +24,8 @@ export default function ShownHandView(props: ShownHandViewProps) {
             (props.flipped ? "top-20" : "bottom-20")
         )}
       >
-        {props.shownHand === "hand" && <HandView {...props.hand} />}
-        {props.shownHand === "offhand" && <OffHandView {...props.offHand} />}
+        {props.shownHand === "hand" && <Hand {...props.hand} />}
+        {props.shownHand === "offhand" && <OffHand {...props.offHand} />}
       </motion.div>
     </AnimatePresence>
   );

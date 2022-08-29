@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { States } from "../state/machines/zhithead.machine";
 import Deck from "./Deck";
-import { GlobalStateContext } from "./GlobalStateProvider";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
 import HumanShownHand from "./HumanShownHand";

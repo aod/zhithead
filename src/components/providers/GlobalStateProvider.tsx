@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren } from "react";
 import { useInterpret } from "@xstate/react";
-import { zhitheadMachine } from "../state/machines/zhithead.machine";
+import { zhitheadMachine } from "../../state/machines/zhithead.machine";
 import { InterpreterFrom } from "xstate";
 
 export const GlobalStateContext = createContext({

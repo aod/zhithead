@@ -1,7 +1,7 @@
 import { createElement, useContext } from "react";
 import { useSelector } from "@xstate/react";
-import { GlobalStateContext } from "./GlobalStateProvider";
-import SwitcherView from "./Switcher.view";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
+import Switcher from "./ui/Switcher";
 import { offHandLen } from "../lib";
 
 export default function BotSwitcher() {
@@ -19,12 +19,19 @@ export default function BotSwitcher() {
 
   const { send } = zhitheadService;
 
-  return createElement(SwitcherView, {
-    handCount: hand.length,
-    offHandCount: offHandLen(offHand.faceDown) + offHandLen(offHand.faceUp),
-    shownHand: shownHand,
-    onSwitch: (shownHand) =>
-      send({ type: "SET_SHOWN_HAND", shownHand, player: "bot" }),
-    flipped: true,
+  return createElement(Switcher, {
+    left: ["Hand", hand.length],
+    right: [
+      "Off-Hand",
+      offHandLen(offHand.faceDown) + offHandLen(offHand.faceUp),
+    ],
+    state: shownHand === "hand" ? "left" : "right",
+    onSwitch: (val) =>
+      send({
+        type: "SET_SHOWN_HAND",
+        shownHand: val === "left" ? "hand" : "offhand",
+        player: "human",
+      }),
+    position: "top",
   });
 }

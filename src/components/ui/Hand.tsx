@@ -1,9 +1,9 @@
 import { motion, Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Card from "./Card";
-import { Cards, Card as TCard } from "../lib";
+import { Cards, Card as TCard } from "../../lib";
 
-export interface HandViewProps {
+export interface HandProps {
   hand: Cards;
   onCardClick?: (card: TCard, index: number) => void;
   hideCards?: boolean;
@@ -11,7 +11,7 @@ export interface HandViewProps {
   grayOut?: (card: TCard, index: number) => boolean;
 }
 
-export default function HandView(props: HandViewProps) {
+export default function Hand(props: HandProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [handWidth, setHandWidth] = useState(0);
   const virtualFanWidth = Math.min(handWidth, props.hand.length * 100);

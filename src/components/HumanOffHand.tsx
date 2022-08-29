@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/react";
 import { createElement, useContext } from "react";
-import { GlobalStateContext } from "./GlobalStateProvider";
-import OffHandView from "./OffHand.view";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
+import OffHand from "./ui/OffHand";
 
 export default function HumanOffHand() {
   const globalServices = useContext(GlobalStateContext);
@@ -10,7 +10,7 @@ export default function HumanOffHand() {
     (state) => state.context.human.offHand
   );
 
-  return createElement(OffHandView, {
+  return createElement(OffHand, {
     offHand,
   });
 }

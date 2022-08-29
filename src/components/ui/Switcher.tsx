@@ -1,19 +1,18 @@
 import { LayoutGroup, motion } from "framer-motion";
 import { PropsWithChildren, useId } from "react";
 import Count from "./Count";
-import { ShownHand } from "../state/machines/zhithead.machine";
 
-interface SwitcherViewProps {
-  handCount: number;
-  offHandCount: number;
-  shownHand: ShownHand;
-  onSwitch: (shownHand: ShownHand) => void;
-  flipped?: boolean;
+interface SwitcherProps {
+  left: [string, number];
+  right: [string, number];
+  state: "left" | "right";
+  onSwitch: (val: "left" | "right") => void;
+  position: "bottom" | "top";
 }
 
-export default function SwitcherView(props: SwitcherViewProps) {
+export default function Switcher(props: SwitcherProps) {
   const layoutGroupId = useId();
-  const flippedSign = props.flipped ? -1 : 1;
+  const flippedSign = props.position === "top" ? -1 : 1;
 
   return (
     <motion.div
@@ -23,21 +22,21 @@ export default function SwitcherView(props: SwitcherViewProps) {
     >
       <div className="flex items-center rounded-full border-4 border-black bg-black">
         <LayoutGroup id={layoutGroupId}>
-          <Option onClick={() => props.onSwitch("hand")}>
-            Hand
-            {props.shownHand === "hand" && <Selected />}
+          <Option onClick={() => props.onSwitch("left")}>
+            {props.left[0]}
+            {props.state === "left" && <Selected />}
             <Count
-              count={props.handCount}
-              position={props.flipped ? "bottom-left" : "top-left"}
+              count={props.left[1]}
+              position={props.position === "top" ? "bottom-left" : "top-left"}
               z={2}
             />
           </Option>
-          <Option onClick={() => props.onSwitch("offhand")}>
-            Off-Hand
-            {props.shownHand === "offhand" && <Selected />}
+          <Option onClick={() => props.onSwitch("right")}>
+            {props.right[0]}
+            {props.state === "right" && <Selected />}
             <Count
-              count={props.offHandCount}
-              position={props.flipped ? "bottom-right" : "top-right"}
+              count={props.right[1]}
+              position={props.position === "top" ? "bottom-right" : "top-right"}
               z={2}
             />
           </Option>

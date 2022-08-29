@@ -1,18 +1,18 @@
 import { motion } from "framer-motion";
-import { Card as TCard, Player } from "../lib";
+import { Card as TCard, Player } from "../../lib";
 import Card from "./Card";
-import CardHolder from "./CardHolder";
+import CardHolder from "../CardHolder";
 
 type Position = 0 | 1 | 2;
 
-export interface OffHandViewProps {
+export interface OffHandProps {
   offHand: Player["offHand"];
   flipped?: boolean;
   onCardPositionedClick?: (card: TCard, position: Position) => void;
   grayOutFaceUpCard?: (card: TCard, position: Position) => boolean;
 }
 
-export default function OffHandView(props: OffHandViewProps) {
+export default function OffHand(props: OffHandProps) {
   const flippedSign = props.flipped ? -1 : 1;
 
   return (
