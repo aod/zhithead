@@ -1,15 +1,6 @@
 import { expect, test } from "vitest";
 import { createCard, getRank, getSuite, Rank, Suite } from "./lib";
 
-test("createCard()", () => {
-  expect(createCard(Suite.Clubs, Rank.Ace)).toBe(0);
-  expect(createCard(Suite.Spades, Rank.Ace)).toBe(0b000011);
-  expect(createCard(Suite.Diamonds, Rank.Num2)).toBe(0b000101);
-  expect(createCard(Suite.Diamonds, Rank.Num3)).toBe(0b001001);
-  expect(createCard(Suite.Diamonds, Rank.Num4)).toBe(0b001101);
-  expect(createCard(Suite.Clubs, Rank.Num4)).toBe(0b001100);
-});
-
 test("getSuite()", () => {
   expect(getSuite(createCard(Suite.Clubs, Rank.Ace))).toBe(Suite.Clubs);
   expect(getSuite(createCard(Suite.Diamonds, Rank.Queen))).toBe(Suite.Diamonds);

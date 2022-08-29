@@ -1,0 +1,165 @@
+[shithead]: https://en.wikipedia.org/wiki/Shithead_(card_game)
+[zhithead]: https://zhithead.yatko.dev
+
+<p align="center">
+  <a href="https://zhithead.yatko.dev">
+    <img src=".readme/zhithead.svg" height="210">
+    <h1 align="center"><b>Zhithead</b></h1>
+  </a>
+</p>
+
+[Rules](#rules)
+| [Background and motivation](#background-and-motivation)
+| [Roadmap](#roadmap)
+| [Development](#development)
+| [Contributing](#contributing)
+| [License](#license)
+
+![GitHub](https://img.shields.io/github/license/aod/zhithead?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/aod/zhithead?style=flat-square)
+![GitHub Repo stars](https://img.shields.io/github/stars/aod/zhithead?style=social)
+
+---
+
+_**Disclaimer: Zhithead is currently a work in progress!**_
+
+---
+
+Zhithead is a clone of the original card game [shithead][shithead] made for
+the browser.
+
+> Shithead (also known by many other names, most commonly Karma, Palace and
+> Shed) is a card game, the object of which is to lose all of one's playing
+> cards, with the final player being the "shthead".
+
+Here's a preview:
+
+<p align="center">
+    <img src=".readme/preview.gif" height="600" />
+</p>
+
+Playtest it [here][zhithead]!
+
+## Rules
+
+Of course to playtest the game you need to know the rules. Well, here they are:
+
+- From a standard shuffled deck each player is dealt:
+  - 3 **hand** cards
+  - 3 **face-up** cards
+  - 3 **face-down** (blind) cards
+- At the beginning players place 3 cards from their **hand** as their **face-up**
+  cards
+- Then the game begins and a player starts by playing the first card
+- The cards are valued by **rank** (suite doesn't matter):
+  - From lowest to highest value: 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A
+  - 2, 7, 8 and 10 are special:
+    - 2: Can be played on anything
+    - 7: Any following card must be of lesser value
+    - 8: Can be played on anything **and** is transparent
+    - 10: Burns the pile including itself
+- Player can play multiple cards of the same rank
+- After every turn Player must take from deck until **hand** size is **3**
+- Player takes whole pile if no card could be played into their **hand**
+- When a _hand_ is empty you move to the next one:
+  **hand** -> **face-up** -> **face-down**
+- **face-down** cards are played _blindly_ and player must take the pile
+  onto their **hand** if its _value_ is less
+- First one to play their last card wins
+
+# Background and motivation
+
+I never really got into card games until a good friend of mine introduced
+me to different kinds i.e. _Toepen_, _Eenendertigen_ and _Shithead_. This
+intrigued me to recreate them for in a browser. My first attempt precedes this
+one which was the same card game, Shithead, but it was mainly focused on online
+support to play with friends. Long story short it worked quite well but the
+codebase was such a mess and it didn't look great at all. Fastforward now I'm
+recreating it but with the focus on UX first and multiplayer last.
+
+# Roadmap
+
+As mentioned above in the disclaimer, Zhithead is still a work in progress and
+is missing some features. In the following stages of development I'm planning
+to implement the following features:
+
+## Alpha
+
+- [x] Implement the core gameplay
+- [ ] Refactor Zhithead state machine
+- [ ] Play multiple cards of the same rank
+- [ ] Pile burn animation/UX
+- [ ] Simple homepage with basic info (about, source code, etc.) and a start button
+- [ ] Final win/lose page
+- [ ] Teach the player on how to play
+- [ ] ...
+
+## Beta
+
+- [ ] Multiplayer support upto 4 players
+  - [ ] Invite link
+- [ ] Rule variations
+- [ ] ...
+
+## Release
+
+- [ ] User profiles
+- [ ] Matchmaking
+- [ ] Leaderbords
+- [ ] ...
+
+# Development
+
+To develop Zhithead you will first need to install
+[NodeJS](https://nodejs.org/en/download/).
+
+Next, download the source code and run the following commands in the root
+directory of the project:
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Start dev environment:
+   ```
+   npm run dev
+   ```
+3. Visit [localhost:3000](http://localhost:3000) to view the application.
+
+## Building
+
+Running this command will typecheck, lint and output the build files to `/dist`:
+
+```
+npm run build
+```
+
+## Testing
+
+Currently there are not a lot of tests but you can run what's there using:
+
+```
+npm test
+```
+
+## Typecheck
+
+I like to run the following command to watch for changes and typecheck
+the project:
+
+```
+npx tsc --noEmit -w
+```
+
+# Contributing
+
+Bug reports and fixes are appreciated as well as ideas or discussions!
+
+However, since this project is a work in progress, please refrain from making PRs
+implementing features on the [roadmap](#roadmap).
+
+Thanks for your comprehension.
+
+# License
+
+MIT
