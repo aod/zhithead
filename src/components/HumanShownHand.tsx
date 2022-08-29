@@ -1,5 +1,6 @@
 import { useSelector } from "@xstate/react";
 import { createElement, useContext } from "react";
+import { canPlay } from "../lib";
 import { GlobalStateContext } from "./GlobalStateProvider";
 import ShownHandView from "./ShownHand.view";
 
@@ -18,6 +19,7 @@ export default function HumanShownHand() {
     zhitheadService,
     (state) => state.context.human.offHand
   );
+  const pile = useSelector(zhitheadService, (state) => state.context.pile);
 
   // TODO: Is this the correct way to access services?
   const human = useSelector(zhitheadService, (state) => state.children.human);
@@ -28,6 +30,7 @@ export default function HumanShownHand() {
     hand: {
       hand,
       onCardClick: (card) => send({ type: "CHOOSE_CARD", card }),
+      grayOut: (card) => !canPlay(card, pile),
     },
     offHand: { offHand },
   });

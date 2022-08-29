@@ -8,6 +8,7 @@ export interface HandViewProps {
   onCardClick?: (card: TCard, index: number) => void;
   hideCards?: boolean;
   flipped?: boolean;
+  grayOut?: (card: TCard, index: number) => boolean;
 }
 
 export default function HandView(props: HandViewProps) {
@@ -67,6 +68,7 @@ export default function HandView(props: HandViewProps) {
             card={card}
             onClick={() => props.onCardClick?.(card, i)}
             flipped={props.hideCards}
+            grayOut={props.grayOut?.(card, i)}
           />
         </motion.div>
       ))}

@@ -7,6 +7,7 @@ export interface CardProps {
   flipped?: boolean;
   onClick?: (card: TCard | undefined) => void;
   z?: number;
+  grayOut?: boolean;
 }
 
 export default function Card(props: CardProps) {
@@ -17,6 +18,12 @@ export default function Card(props: CardProps) {
     <motion.img
       onClick={() => props.onClick?.(props.card)}
       layoutId={props.card?.toString()}
+      animate={{
+        filter: props.grayOut ? "contrast(0.55)" : "contrast(1)",
+        transition: {
+          duration: 1.5,
+        },
+      }}
       className={clsx(
         "relative h-card-height w-card-width select-none shadow-lg shadow-zinc-500/40 drop-shadow-xl",
         isFace && "rounded-xl border-white bg-white p-1"
