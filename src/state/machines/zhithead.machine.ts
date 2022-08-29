@@ -34,7 +34,6 @@ interface ZhitheadContext {
 
 function createInitialContext(): ZhitheadContext {
   const shuffledDeck = shuffle(createDeck());
-  shuffledDeck.splice(0, 34);
   const [deck, [human, bot]] = dealCardsFor(2, shuffledDeck);
 
   bot.offHand.faceUp = bot.hand.splice(0, 3) as OffHandCards;
