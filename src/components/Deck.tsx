@@ -2,7 +2,7 @@ import { useSelector } from "@xstate/react";
 import clsx from "clsx";
 import { useContext } from "react";
 import Card from "./ui/Card";
-import CardHolder from "./CardHolder";
+import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
@@ -28,7 +28,7 @@ function Text(props: { withBg: boolean }) {
     <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
       <span
         className={clsx(
-          "select-none rounded-lg  text-4xl font-bold tracking-wider",
+          "select-none rounded-lg text-xl font-semibold tracking-wide md:text-4xl md:font-bold md:tracking-wider",
           props.withBg && "bg-zinc-800/40 p-2 text-zinc-200",
           !props.withBg && "text-zinc-600"
         )}

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { getRank, Rank } from "../lib";
 import Card from "./ui/Card";
-import CardHolder from "./CardHolder";
+import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
@@ -68,7 +68,7 @@ function Text() {
       className="absolute flex h-full w-full items-center justify-center"
       exit={{ opacity: 0, transition: { duration: 0.15 } }}
     >
-      <span className="select-none text-4xl font-bold tracking-wider text-zinc-600">
+      <span className="select-none text-xl font-semibold tracking-wide text-zinc-600 md:text-4xl md:font-bold md:tracking-wider">
         PILE
       </span>
     </motion.div>

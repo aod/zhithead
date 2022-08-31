@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card as TCard, Player } from "../../lib";
 import Card from "./Card";
-import CardHolder from "../CardHolder";
+import CardHolder from "./CardHolder";
 
 type Position = 0 | 1 | 2;
 
@@ -21,7 +21,7 @@ export default function OffHand(props: OffHandProps) {
       animate={{ y: 0 }}
       transition={{ duration: 0.2, type: "tween" }}
       exit={{ y: 300 * flippedSign }}
-      className="flex justify-center space-x-4"
+      className="flex justify-center gap-2 md:gap-4"
     >
       {[0, 1, 2].map((index) => (
         <CardHolder key={index}>

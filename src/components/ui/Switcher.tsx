@@ -49,7 +49,7 @@ export default function Switcher(props: SwitcherProps) {
 function Option(props: PropsWithChildren<{ onClick?: () => void }>) {
   return (
     <span
-      className="relative flex h-full cursor-pointer select-none items-center py-1.5 px-4 font-semibold tracking-wide text-zinc-200"
+      className="relative flex h-full cursor-pointer select-none items-center py-0.5 px-2 text-xs font-semibold tracking-wide text-zinc-200 md:py-1.5 md:px-4 md:text-base"
       onClick={props.onClick}
     >
       {props.children}

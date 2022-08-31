@@ -6,7 +6,14 @@
 #root {
   --og-card-width: 63mm;
   --og-card-height: 88mm;
-  --card-scale-factor: 0.7;
+  --card-scale-factor: 0.48;
   --card-width: calc(var(--og-card-width) * var(--card-scale-factor));
   --card-height: calc(var(--og-card-height) * var(--card-scale-factor));
+}
+
+@screen md {
+  :root,
+  #root {
+    --card-scale-factor: 0.7;
+  }
 }
