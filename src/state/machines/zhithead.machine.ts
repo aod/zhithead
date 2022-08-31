@@ -166,7 +166,7 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                   700: {
                     actions: "takeCard",
                     cond: (context) =>
-                      context[context.currentTurn].hand.length <= 3,
+                      context[context.currentTurn].hand.length < 3,
                   },
                   1000: [
                     {
