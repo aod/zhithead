@@ -78,6 +78,16 @@ export function createDeck(): Deck {
   );
 }
 
+export function isPileBurnable(pile: Readonly<Pile>): boolean {
+  const topCard = pile.at(-1);
+  if (topCard === undefined) return false;
+  const isTopCard10 = getRank(topCard) === Rank.Num10;
+  const areTop4CardsSameRank =
+    pile.length >= 4 &&
+    pile.slice(-4).every((card) => getRank(card) === getRank(topCard));
+  return isTopCard10 || areTop4CardsSameRank;
+}
+
 export type OffHandCards = [Card?, Card?, Card?];
 
 export interface Player {

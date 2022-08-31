@@ -7,11 +7,10 @@ import {
   Cards,
   createDeck,
   dealCardsFor,
-  getRank,
+  isPileBurnable,
   isPlayerCurHand,
   OffHandCards,
   Player as TPlayer,
-  Rank,
 } from "../../lib";
 import humanMachine from "./human.machine";
 import { PlayerEvents, barePlayerEvent } from "../shared/player-events";
@@ -155,13 +154,9 @@ export const zhitheadMachine = zhitheadModel.createMachine(
               afterPlay: {
                 entry: "changeSwitcher",
                 after: {
-                  300: { actions: "changeSwitcher" },
                   600: {
                     actions: "burnPile",
-                    cond: {
-                      type: "topOfPileRankEquals",
-                      rank: Rank.Num10,
-                    },
+                    cond: (context) => isPileBurnable(context.pile),
                   },
                   700: {
                     actions: "takeCard",
@@ -273,16 +268,6 @@ export const zhitheadMachine = zhitheadModel.createMachine(
           context.shownHand[context.currentTurn] = "offhand";
         }
       }),
-    },
-    guards: {
-      topOfPileRankEquals: (context, _, { cond }) => {
-        const top = context.pile.at(-1);
-        // FIXME
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const rank: Rank = cond.rank;
-        return top !== undefined && getRank(top) === rank;
-      },
     },
   }
 );
