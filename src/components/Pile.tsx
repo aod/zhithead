@@ -1,7 +1,7 @@
 import { useSelector } from "@xstate/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, TargetAndTransition } from "framer-motion";
 import { useContext } from "react";
-import { getRank, Rank } from "../lib";
+import { getRank, Rank, Card as TCard } from "../lib";
 import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
@@ -11,52 +11,38 @@ export default function Pile() {
   const { zhitheadService } = useContext(GlobalStateContext);
   const pile = useSelector(zhitheadService, (state) => state.context.pile);
   const { send } = zhitheadService;
-  const pileWithout8s = pile.filter((card) => getRank(card) !== Rank.Num8);
+
+  function animate(card: TCard): TargetAndTransition {
+    const is8 = getRank(card) === Rank.Num8;
+    const firstNon8AfterCard = pile
+      .slice(pile.indexOf(card)! + 1)
+      .find((card) => getRank(card) !== Rank.Num8);
+    const shouldAnimate = is8 && firstNon8AfterCard === undefined;
+
+    return {
+      x: shouldAnimate ? 25 : 0,
+      y: shouldAnimate ? 20 : 0,
+      transition: {
+        delay: shouldAnimate ? 0.6 : 0.1,
+        type: "tween",
+      },
+    };
+  }
 
   return (
     <CardHolder>
-      {pileWithout8s.length >= 2 && (
-        <div className="absolute">
-          <Card card={pileWithout8s.at(-2)} />
-        </div>
-      )}
-      {pileWithout8s.length >= 1 && (
-        <div className="absolute" style={{ zIndex: 1 }}>
-          <Card
-            key={pileWithout8s.length}
-            card={pileWithout8s.at(-1)}
-            onClick={() => send({ type: "TAKE_PILE" })}
-          />
-        </div>
-      )}
-      <AnimatePresence>
-        {pile.length >= 1 && getRank(pile.at(-1)!) === Rank.Num8 && (
-          <motion.div
-            key={pile.at(-1)!}
-            className="absolute h-full w-full"
-            initial={{ left: 0, top: 0, filter: "opacity(1)", opacity: 1 }}
-            animate={{
-              x: 25,
-              y: 20,
-              transition: {
-                delay: 0.6,
-                type: "tween",
-              },
-              filter: "opacity(0.9)",
-            }}
-            exit={{
-              filter: "opacity(1)",
-              x: 0,
-              y: 0,
-              zIndex: 0,
-            }}
-            style={{ zIndex: 2 }}
-          >
-            <Card card={pile.at(-1)} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Count count={pile.length} position="top-left" z={2} />
+      {pile.map((card, i) => (
+        <motion.div
+          className="absolute"
+          key={i}
+          onClick={() => send({ type: "TAKE_PILE" })}
+          style={{ zIndex: i + 1 }}
+          animate={animate(card)}
+        >
+          <Card card={card} />
+        </motion.div>
+      ))}
+      <Count count={pile.length} position="top-left" z={99} />
       <AnimatePresence>{!pile.length && <Text />}</AnimatePresence>
     </CardHolder>
   );
