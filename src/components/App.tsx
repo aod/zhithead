@@ -1,22 +1,26 @@
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { motion } from "framer-motion";
 import { useContext } from "react";
-import { States } from "../state/machines/zhithead.machine";
 import Deck from "./Deck";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
 import ShownHand from "./ShownHand";
 import Switcher from "./Switcher";
+import { isChoosingFaceUpCardsStor, isPlayingStor } from "../state/selectors";
 
 export default function App() {
-  const globalServices = useContext(GlobalStateContext);
-  const [state] = useActor(globalServices.zhitheadService);
+  const { zhitheadService } = useContext(GlobalStateContext);
+  const isPlaying = useSelector(zhitheadService, isPlayingStor);
+  const isChoosingFaceUpCards = useSelector(
+    zhitheadService,
+    isChoosingFaceUpCardsStor
+  );
 
   return (
     <main className="grid h-screen grid-rows-3 overflow-hidden bg-zinc-800">
       <div className="relative">
-        {state.matches(States.playing) && (
+        {isPlaying && (
           <>
             <ShownHand player="bot" />
             <div className="absolute top-2 z-10 mx-auto w-full">
@@ -26,7 +30,7 @@ export default function App() {
         )}
       </div>
 
-      {state.matches(States.choosingFaceUpCards) && (
+      {isChoosingFaceUpCards && (
         <motion.div
           initial={{ opacity: 0.4 }}
           animate={{ opacity: 1 }}
@@ -35,7 +39,7 @@ export default function App() {
           <HumanOffHand />
         </motion.div>
       )}
-      {state.matches(States.playing) && (
+      {isPlaying && (
         <motion.div
           initial={{ opacity: 0.4 }}
           animate={{ opacity: 1 }}
@@ -47,7 +51,7 @@ export default function App() {
       )}
 
       <div className="relative pt-4">
-        {state.matches(States.playing) && (
+        {isPlaying && (
           <div className="absolute bottom-2 z-10 mx-auto w-full">
             <Switcher player="human" />
           </div>
