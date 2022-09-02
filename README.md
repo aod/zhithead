@@ -85,10 +85,10 @@ to implement the following features:
 
 ## Alpha
 
-- [x] Implement the core gameplay
+- [ ] Implement missing rules
+  - [x] Burn pile after 4 cards with same rank has been played
+  - [ ] Play multiple cards of the same rank
 - [ ] Refactor Zhithead state machine
-- [ ] Play multiple cards of the same rank
-- [x] Burn pile after 4 cards with same rank has been played
 - [ ] Pile burn animation/UX
 - [ ] Simple homepage with basic info (about, source code, etc.) and a start button
 - [ ] Final win/lose page
