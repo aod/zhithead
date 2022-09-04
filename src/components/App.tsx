@@ -1,6 +1,6 @@
 import { useSelector } from "@xstate/react";
 import { motion } from "framer-motion";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Deck from "./Deck";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import HumanOffHand from "./HumanOffHand";
@@ -17,8 +17,18 @@ export default function App() {
     isChoosingFaceUpCardsStor
   );
 
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  useEffect(() => {
+    const onResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
-    <main className="grid h-screen grid-rows-3 overflow-hidden bg-zinc-800">
+    <main
+      className="grid grid-rows-3 overflow-hidden bg-zinc-800"
+      style={{ height: windowHeight }}
+    >
       <div className="relative">
         {isPlaying && (
           <>
