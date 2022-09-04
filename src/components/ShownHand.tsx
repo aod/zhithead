@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { canPlay } from "../lib";
 import { Player } from "../state/machines/zhithead.machine";
+import { isChoosingFaceUpCardsStor, isPlayingStor } from "../state/selectors";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import Hand from "./ui/Hand";
 import OffHand from "./ui/OffHand";
@@ -14,6 +15,11 @@ interface ShownHandProps {
 
 export default function ShownHand(props: ShownHandProps) {
   const { zhitheadService } = useContext(GlobalStateContext);
+  const isPlaying = useSelector(zhitheadService, isPlayingStor);
+  const isChoosingFaceUpCards = useSelector(
+    zhitheadService,
+    isChoosingFaceUpCardsStor
+  );
 
   const shownHand = useSelector(
     zhitheadService,
@@ -47,10 +53,11 @@ export default function ShownHand(props: ShownHandProps) {
       >
         {shownHand === "hand" && (
           <Hand
+            enablePlaySameRanks={props.player === "human" && isPlaying}
             hand={hand}
-            onCardClick={(card) => {
+            onCardClick={(card, _, n) => {
               if (props.player === "human") {
-                send({ type: "CHOOSE_CARD", card });
+                send({ type: "CHOOSE_CARD", card, n });
               }
             }}
             grayOut={
@@ -64,11 +71,12 @@ export default function ShownHand(props: ShownHandProps) {
         )}
         {shownHand === "offhand" && (
           <OffHand
+            disable={props.player === "human" && isChoosingFaceUpCards}
             flipped={flipped}
             offHand={offHand}
-            onCardPositionedClick={(card) => {
+            onCardPositionedClick={(card, _, n) => {
               if (props.player === "human") {
-                send({ type: "CHOOSE_CARD", card });
+                send({ type: "CHOOSE_CARD", card, n });
               }
             }}
             grayOutFaceUpCard={(card) => !!hand.length || !canPlay(card, pile)}

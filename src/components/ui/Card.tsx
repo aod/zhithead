@@ -1,13 +1,15 @@
 import clsx from "clsx";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Card as TCard, getRank, getSuite, Rank, Suite } from "../../lib";
 
 export interface CardProps {
   card?: TCard;
   flipped?: boolean;
-  onClick?: (card: TCard | undefined) => void;
+  onClick?: (card?: TCard, n?: number) => void;
   z?: number;
   grayOut?: boolean;
+  withSelector?: boolean;
+  selectorMax?: number;
 }
 
 export default function Card(props: CardProps) {
@@ -15,22 +17,65 @@ export default function Card(props: CardProps) {
   const src = isFace ? createCardSVGPath(props.card!) : CARD_BACK_SVG_PATH;
 
   return (
-    <motion.img
-      onClick={() => props.onClick?.(props.card)}
-      layoutId={props.card?.toString()}
-      animate={{
-        filter: props.grayOut ? "contrast(0.55)" : "contrast(1)",
-        transition: {
-          duration: 1.5,
-        },
-      }}
-      className={clsx(
-        "relative h-card-height w-card-width select-none shadow-lg shadow-zinc-500/40 drop-shadow-xl",
-        isFace && "rounded-lg border-white bg-white p-1"
-      )}
-      src={src}
+    <div
+      className="relative h-card-height w-card-width"
       style={{ zIndex: props.z ?? "unset" }}
-    />
+    >
+      <AnimatePresence>
+        {props.withSelector && (
+          <Selector
+            onClick={(n) => props.onClick?.(props.card, n)}
+            selectorMax={props.selectorMax ?? 4}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.img
+        onClick={() => props.onClick?.(props.card)}
+        layoutId={props.card?.toString()}
+        animate={{
+          filter: props.grayOut ? "contrast(0.55)" : "contrast(1)",
+          transition: {
+            duration: 1.5,
+          },
+        }}
+        className={clsx(
+          "select-none shadow-lg shadow-zinc-500/40 drop-shadow-xl",
+          isFace && "rounded-lg border-white bg-white p-1",
+          props.withSelector && "rounded-t-none rounded-b-lg bg-white"
+        )}
+        src={src}
+      />
+    </div>
+  );
+}
+
+function Selector(props: {
+  onClick: (n: number) => void;
+  selectorMax: number;
+}) {
+  return (
+    <motion.div
+      className="absolute -top-5 flex h-5 w-full justify-evenly divide-x divide-white rounded-t-lg bg-black md:-top-8 md:h-8"
+      initial={{ y: 32 }}
+      animate={{ y: 0 }}
+      exit={{ y: 32 }}
+      transition={{ type: "tween", duration: 0.2 }}
+    >
+      {[1, 2, 3, 4].map((n, i) => (
+        <button
+          onClick={() => props.onClick?.(n)}
+          key={i}
+          className={clsx(
+            "w-full text-xs text-zinc-200 md:text-base",
+            n > props.selectorMax && "text-zinc-500"
+          )}
+          disabled={n > props.selectorMax}
+        >
+          {n}
+        </button>
+      ))}
+    </motion.div>
   );
 }
 

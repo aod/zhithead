@@ -7,6 +7,7 @@ import {
   Cards,
   createDeck,
   dealCardsFor,
+  getRank,
   isPileBurnable,
   isPlayerCurHand,
   OffHandCards,
@@ -161,7 +162,9 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                   700: {
                     actions: "takeCard",
                     cond: (context) =>
+                      context.deck.length > 0 &&
                       context[context.currentTurn].hand.length < 3,
+                    target: "#loop.afterPlay",
                   },
                   1000: [
                     {
@@ -232,19 +235,30 @@ export const zhitheadMachine = zhitheadModel.createMachine(
       }),
       play: assign((context, event) => {
         if (event.type !== "CARD_CHOSEN") return;
-        context.pile.push(event.card!);
-        if (context[context.currentTurn].hand.length) {
-          const hand = context[context.currentTurn].hand;
-          hand.splice(hand.indexOf(event.card!), 1);
+
+        const player = curPlayer(context);
+        if (!isPlayerCurHand(player, "faceDown")) {
+          const isHand = isPlayerCurHand(player, "hand");
+          const hand = isHand ? player.hand : player.offHand.faceUp;
+          const toPlay: Cards =
+            event.n === undefined
+              ? [event.card!]
+              : (hand
+                  .filter(
+                    (card) =>
+                      card !== undefined &&
+                      getRank(event.card!) === getRank(card)
+                  )
+                  .slice(0, event.n) as Cards);
+          for (const card of toPlay) {
+            context.pile.push(card);
+            if (isHand) hand.splice(hand.indexOf(card), 1);
+            else hand[hand.indexOf(card)] = undefined;
+          }
         } else {
-          const hands = [
-            context[context.currentTurn].offHand.faceUp,
-            context[context.currentTurn].offHand.faceDown,
-          ];
-          const hand = hands.find((hand) =>
-            hand.some((card) => card !== undefined)
-          );
-          if (hand) hand[hand.indexOf(event.card!)] = undefined;
+          const hand = player.offHand.faceDown;
+          context.pile.push(event.card!);
+          hand[hand.indexOf(event.card!)] = undefined;
         }
       }),
       takePile: assign((context) => {
@@ -271,6 +285,10 @@ export const zhitheadMachine = zhitheadModel.createMachine(
     },
   }
 );
+
+function curPlayer(context: ContextFrom<typeof zhitheadModel>) {
+  return context[context.currentTurn];
+}
 
 function hasChoosenAllFaceUpCards(
   context: ContextFrom<typeof zhitheadModel>

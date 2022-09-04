@@ -16,7 +16,11 @@ export function createBotService(): InvokeCreator<
     onReceive((e) => {
       if (e.type === "ASK_PICK_CARD") {
         id = delayedTimeout(MIN_DELAY, MAX_DELAY, () =>
-          callback({ type: "CARD_CHOSEN", card: bot(e.pile, e.player) })
+          callback({
+            type: "CARD_CHOSEN",
+            card: bot(e.pile, e.player),
+            n: undefined,
+          })
         );
       }
     });

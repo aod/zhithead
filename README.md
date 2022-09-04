@@ -85,9 +85,9 @@ to implement the following features:
 
 ## Alpha
 
-- [ ] Implement missing rules
+- [x] Implement missing rules
   - [x] Burn pile after 4 cards with same rank has been played
-  - [ ] Play multiple cards of the same rank
+  - [x] Play multiple cards of the same rank
 - [ ] Refactor Zhithead state machine
 - [ ] Pile burn animation/UX
 - [ ] Simple homepage with basic info (about, source code, etc.) and a start button

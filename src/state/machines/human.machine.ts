@@ -5,7 +5,7 @@ import { PlayerEvents } from "../shared/player-events";
 
 type HumanEvents =
   | { type: "ASK_PICK_CARD" }
-  | { type: "CHOOSE_CARD"; card: Card };
+  | { type: "CHOOSE_CARD"; card: Card; n?: number };
 
 const humanMachine = createMachine<null, HumanEvents>({
   id: "human",
@@ -20,7 +20,7 @@ const humanMachine = createMachine<null, HumanEvents>({
       on: {
         CHOOSE_CARD: {
           actions: sendParent((_, event) =>
-            PlayerEvents["CARD_CHOSEN"](event.card)
+            PlayerEvents["CARD_CHOSEN"](event.card, event.n)
           ),
           target: "idle",
         },

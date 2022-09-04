@@ -2,7 +2,7 @@ import { Card, Pile, Player } from "../../lib";
 
 const events = {
   ASK_PICK_CARD: (pile: Pile, player: Player) => ({ pile, player }),
-  CARD_CHOSEN: (card: Card | undefined) => ({ card }),
+  CARD_CHOSEN: (card?: Card, n?: number) => ({ card, n }),
 };
 
 export const PlayerEvents = {
