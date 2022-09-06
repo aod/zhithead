@@ -50,7 +50,6 @@ Of course to playtest the game you need to know the rules. Well, here they are:
   - 3 **face-down** (blind) cards
 - At the beginning players place 3 cards from their **hand** as their **face-up**
   cards
-- Then the game begins and a player starts by playing the first card
 - The cards are valued by **rank** (suite doesn't matter):
   - From lowest to highest value: 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A
   - 2, 7, 8 and 10 are special:
@@ -58,14 +57,19 @@ Of course to playtest the game you need to know the rules. Well, here they are:
     - 7: Any following card must be of lesser value
     - 8: Can be played on anything **and** is transparent
     - 10: Burns the pile including itself
-- Player can play multiple cards of the same rank
-- After every turn Player must take from deck until **hand** size is **3**
-- Player can pick up the pile at any moment
-- When a _hand_ is empty you move to the next one:
+- The game starts with the first turn being the next clockwise player of who
+  dealt the cards. Further turns are taken in clockwise order
+- Player does one of the following on their turn:
+  - Plays 1 up to multiple cards of the same rank
+  - Picks up the pile
+- Player then ensures their **hand** size is atleast 3 by picking card(s)
+  from the deck if necessary and is possible (deck contains cards)
+- When the player's _*hand*_ is empty you move to the next one:
   **hand** -> **face-up** -> **face-down**
 - **face-down** cards are played _blindly_ and player must take the pile
   onto their **hand** if its _value_ is less
 - First one to play their last card wins
+- Whoever wins is the next dealer
 
 # Background and motivation
 
