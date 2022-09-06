@@ -60,7 +60,7 @@ Of course to playtest the game you need to know the rules. Well, here they are:
     - 10: Burns the pile including itself
 - Player can play multiple cards of the same rank
 - After every turn Player must take from deck until **hand** size is **3**
-- Player takes whole pile if no card could be played into their **hand**
+- Player can pick up the pile at any moment
 - When a _hand_ is empty you move to the next one:
   **hand** -> **face-up** -> **face-down**
 - **face-down** cards are played _blindly_ and player must take the pile

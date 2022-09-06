@@ -142,13 +142,7 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                       "takePile",
                       "switchTurns",
                     ],
-                    cond: (context) =>
-                      context.currentTurn === "human" &&
-                      (!_canPlay(
-                        context.pile.at(-1)!,
-                        context.pile.slice(0, -1)
-                      ) ||
-                        !canCurrentPlayerPlayCard(context)),
+                    cond: (context) => context.currentTurn === "human",
                   },
                 },
               },
