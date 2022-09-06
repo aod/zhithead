@@ -237,19 +237,26 @@ export const zhitheadMachine = zhitheadModel.createMachine(
         if (event.type !== "CARD_CHOSEN") return;
 
         const player = curPlayer(context);
+        const playedCard = event.card!;
+
         if (!isPlayerCurHand(player, "faceDown")) {
           const isHand = isPlayerCurHand(player, "hand");
           const hand = isHand ? player.hand : player.offHand.faceUp;
-          const toPlay: Cards =
-            event.n === undefined
-              ? [event.card!]
-              : (hand
-                  .filter(
-                    (card) =>
-                      card !== undefined &&
-                      getRank(event.card!) === getRank(card)
-                  )
-                  .slice(0, event.n) as Cards);
+
+          const toPlay: Cards = [playedCard];
+          if (event.n) {
+            toPlay.push(
+              ...(hand
+                .filter(
+                  (card) =>
+                    card !== undefined &&
+                    card !== playedCard &&
+                    getRank(playedCard) === getRank(card)
+                )
+                .slice(0, event.n - 1) as Cards)
+            );
+          }
+
           for (const card of toPlay) {
             context.pile.push(card);
             if (isHand) hand.splice(hand.indexOf(card), 1);
@@ -257,8 +264,8 @@ export const zhitheadMachine = zhitheadModel.createMachine(
           }
         } else {
           const hand = player.offHand.faceDown;
-          context.pile.push(event.card!);
-          hand[hand.indexOf(event.card!)] = undefined;
+          context.pile.push(playedCard);
+          hand[hand.indexOf(playedCard)] = undefined;
         }
       }),
       takePile: assign((context) => {
