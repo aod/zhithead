@@ -54,7 +54,7 @@ Of course to playtest the game you need to know the rules. Well, here they are:
   - From lowest to highest value: 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A
   - 2, 7, 8 and 10 are special:
     - 2: Can be played on anything
-    - 7: Any following card must be of lesser value
+    - 7: Any following card must be of equal or lesser value
     - 8: Can be played on anything **and** is transparent
     - 10: Burns the pile including itself
 - The game starts with the first turn being the next clockwise player of who
