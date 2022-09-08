@@ -63,23 +63,18 @@ export const zhitheadModel = createModel(createInitialContext(), {
   },
 });
 
-export enum States {
-  choosingFaceUpCards = "choosingFaceUpCards",
-  playing = "playing",
-}
-
 export const zhitheadMachine = zhitheadModel.createMachine(
   {
     invoke: [
       { src: humanMachine, id: "human" },
       { src: createBotService(), id: "bot" },
     ],
-    initial: States.choosingFaceUpCards,
+    initial: "choosingFaceUpCards",
     context: zhitheadModel.initialContext,
     states: {
-      [States.choosingFaceUpCards]: {
+      choosingFaceUpCards: {
         after: {
-          500: { target: States.playing, cond: hasChoosenAllFaceUpCards },
+          500: { target: "playing", cond: hasChoosenAllFaceUpCards },
         },
         entry: send(
           (context) =>
@@ -92,12 +87,12 @@ export const zhitheadMachine = zhitheadModel.createMachine(
         on: {
           CARD_CHOSEN: {
             actions: ["playToOffhand"],
-            target: States.choosingFaceUpCards,
+            target: "choosingFaceUpCards",
             cond: (context) => !hasChoosenAllFaceUpCards(context),
           },
         },
       },
-      [States.playing]: {
+      playing: {
         initial: "loop",
         type: "parallel",
         states: {

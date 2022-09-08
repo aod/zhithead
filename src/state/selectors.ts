@@ -1,9 +1,9 @@
 import { StateFrom } from "xstate";
-import { zhitheadMachine, States } from "./machines/zhithead.machine";
+import { zhitheadMachine } from "./machines/zhithead.machine";
 
 export const isChoosingFaceUpCardsStor = (
   state: StateFrom<typeof zhitheadMachine>
-) => state.matches(States.choosingFaceUpCards);
+) => state.matches("choosingFaceUpCards");
 
 export const isPlayingStor = (state: StateFrom<typeof zhitheadMachine>) =>
-  state.matches(States.playing);
+  state.matches("playing");
