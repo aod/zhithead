@@ -2,6 +2,7 @@ import { assign } from "@xstate/immer";
 import { ContextFrom, EventFrom, send } from "xstate";
 import { createModel } from "xstate/lib/model";
 import {
+  asCards,
   canPlay as _canPlay,
   Card,
   Cards,
@@ -225,25 +226,24 @@ export const zhitheadMachine = zhitheadModel.createMachine(
       play: assign((context, event) => {
         if (event.type !== "CARD_CHOSEN") return;
 
-        const player = curPlayer(context);
+        const player = currentPlayer(context);
         const playedCard = event.card!;
 
-        if (!isPlayerCurHand(player, "faceDown")) {
+        if (isPlayerCurHand(player, "faceDown")) {
+          const hand = player.offHand.faceDown;
+          context.pile.push(playedCard);
+          hand[hand.indexOf(playedCard)] = undefined;
+        } else {
           const isHand = isPlayerCurHand(player, "hand");
           const hand = isHand ? player.hand : player.offHand.faceUp;
 
           const toPlay: Cards = [playedCard];
           if (event.n) {
-            toPlay.push(
-              ...(hand
-                .filter(
-                  (card) =>
-                    card !== undefined &&
-                    card !== playedCard &&
-                    getRank(playedCard) === getRank(card)
-                )
-                .slice(0, event.n - 1) as Cards)
-            );
+            const cards = asCards(hand)
+              .filter((card) => getRank(card) === getRank(playedCard))
+              .filter((card) => card !== playedCard)
+              .slice(0, event.n - 1);
+            toPlay.push(...cards);
           }
 
           for (const card of toPlay) {
@@ -251,17 +251,11 @@ export const zhitheadMachine = zhitheadModel.createMachine(
             if (isHand) hand.splice(hand.indexOf(card), 1);
             else hand[hand.indexOf(card)] = undefined;
           }
-        } else {
-          const hand = player.offHand.faceDown;
-          context.pile.push(playedCard);
-          hand[hand.indexOf(playedCard)] = undefined;
         }
       }),
       takePile: assign((context) => {
-        context[context.currentTurn].hand = [
-          ...context[context.currentTurn].hand,
-          ...context.pile,
-        ];
+        const player = currentPlayer(context);
+        player.hand.push(...context.pile);
         context.pile = [];
       }),
       takeCard: assign((context) => {
@@ -272,7 +266,7 @@ export const zhitheadMachine = zhitheadModel.createMachine(
         context.pile = [];
       }),
       changeSwitcher: assign((context) => {
-        if (context[context.currentTurn].hand.length) {
+        if (isPlayerCurHand(currentPlayer(context), "hand")) {
           context.shownHand[context.currentTurn] = "hand";
         } else {
           context.shownHand[context.currentTurn] = "offhand";
@@ -282,7 +276,7 @@ export const zhitheadMachine = zhitheadModel.createMachine(
   }
 );
 
-function curPlayer(context: ContextFrom<typeof zhitheadModel>) {
+function currentPlayer(context: ContextFrom<typeof zhitheadModel>) {
   return context[context.currentTurn];
 }
 
@@ -297,20 +291,11 @@ function canPlay(
   event: EventFrom<typeof zhitheadModel>
 ): boolean {
   if (event.type !== "CARD_CHOSEN") return false;
-  const hands = [
-    context[context.currentTurn].hand,
-    context[context.currentTurn].offHand.faceUp.filter(
-      (card) => card !== undefined
-    ),
-  ];
-  const firstNonEmptyVisibleHand = hands.find((hand) => hand.length);
-  if (firstNonEmptyVisibleHand !== undefined) {
-    return (
-      firstNonEmptyVisibleHand.includes(event.card!) &&
-      _canPlay(event.card!, context.pile)
-    );
-  }
-  return true;
+  const player = currentPlayer(context);
+  if (isPlayerCurHand(player, "faceDown")) return true;
+  const hands = [player.hand, asCards(player.offHand.faceUp)];
+  const hand = hands.find((hand) => hand.length) ?? [];
+  return hand.includes(event.card!) && _canPlay(event.card!, context.pile);
 }
 
 function shuffle<T>(array: T[]): T[] {

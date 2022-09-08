@@ -90,6 +90,12 @@ export function isPileBurnable(pile: Readonly<Pile>): boolean {
 
 export type OffHandCards = [Card?, Card?, Card?];
 
+export function asCards(
+  cards: Readonly<OffHandCards> | Readonly<Cards>
+): Cards {
+  return cards.filter((card) => card !== undefined) as Cards;
+}
+
 export interface Player {
   hand: Cards;
   offHand: {
