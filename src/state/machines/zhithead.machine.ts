@@ -297,22 +297,6 @@ function hasChoosenAllFaceUpCards(
   return context.human.offHand.faceUp.length === 3;
 }
 
-function canCurrentPlayerPlayCard(
-  context: ContextFrom<typeof zhitheadModel>
-): boolean {
-  const hands = [
-    context[context.currentTurn].hand,
-    context[context.currentTurn].offHand.faceUp.filter(
-      (card) => card !== undefined
-    ) as Cards,
-  ];
-  const hand = hands.find((hand) => hand.length);
-  if (hand !== undefined) {
-    return hand.some((card) => _canPlay(card, context.pile));
-  }
-  return true;
-}
-
 function canPlay(
   context: ContextFrom<typeof zhitheadModel>,
   event: EventFrom<typeof zhitheadModel>
