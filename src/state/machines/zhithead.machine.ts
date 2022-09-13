@@ -6,6 +6,7 @@ import {
   canPlay as _canPlay,
   Card,
   Cards,
+  compareCards,
   createDeck,
   dealCardsFor,
   getRank,
@@ -60,6 +61,7 @@ export const zhitheadModel = createModel(createInitialContext(), {
     }),
     TAKE_CARD: () => ({}),
     TAKE_PILE: () => ({}),
+    SORT_HAND: () => ({}),
     ...barePlayerEvent("CARD_CHOSEN"),
   },
 });
@@ -203,6 +205,15 @@ export const zhitheadMachine = zhitheadModel.createMachine(
               SET_SHOWN_HAND: {
                 actions: assign((context, event) => {
                   context.shownHand[event.player] = event.shownHand;
+                }),
+              },
+            },
+          },
+          sorter: {
+            on: {
+              SORT_HAND: {
+                actions: assign((context) => {
+                  context.human.hand.sort(compareCards);
                 }),
               },
             },

@@ -46,6 +46,10 @@ export function cardToString(card: Readonly<Card>) {
   return `${Suite[getSuite(card)]}-${[Rank[getRank(card)]]}`;
 }
 
+export function compareCards(a: Readonly<Card>, b: Readonly<Card>) {
+  return getRank(a) - getRank(b);
+}
+
 function createRanks(): Rank[] {
   return [
     Rank.Ace,

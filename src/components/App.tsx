@@ -8,6 +8,7 @@ import Pile from "./Pile";
 import ShownHand from "./ShownHand";
 import Switcher from "./Switcher";
 import { isChoosingFaceUpCardsStor, isPlayingStor } from "../state/selectors";
+import SortButton from "./SortButton";
 
 export default function App() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -62,7 +63,8 @@ export default function App() {
 
       <div className="relative pt-4">
         {isPlaying && (
-          <div className="absolute bottom-2 z-10 mx-auto w-full">
+          <div className="absolute -left-6 bottom-2 z-10 mx-auto flex w-full items-center justify-center gap-4">
+            <SortButton />
             <Switcher player="human" />
           </div>
         )}
