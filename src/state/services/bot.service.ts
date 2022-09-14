@@ -10,7 +10,7 @@ export function createBotService(): InvokeCreator<
   EventFrom<typeof zhitheadModel>
 > {
   return () => (callback, onReceive) => {
-    let id: number;
+    let id: ReturnType<typeof delayedTimeout>;
 
     // TODO: How to get correct typing here?
     onReceive((e) => {
