@@ -18,7 +18,7 @@
     "lucide-react": "^0.88.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "xstate": "^4.32.1"
+    "xstate": "^4.33.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
