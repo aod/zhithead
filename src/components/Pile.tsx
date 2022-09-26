@@ -6,6 +6,7 @@ import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
+import Fire from "./ui/Fire";
 
 export default function Pile() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -29,22 +30,71 @@ export default function Pile() {
     };
   }
 
+  const topCard = pile.at(-1);
+  const shouldBurnPile =
+    topCard !== undefined && getRank(topCard) === Rank.Num10;
+
   return (
     <CardHolder>
-      {pile.map((card, i) => (
+      {pile.map((card) => (
         <motion.div
           className="absolute"
-          key={i}
+          key={card}
           onClick={() => send({ type: "TAKE_PILE" })}
-          style={{ zIndex: i + 1 }}
           animate={animate(card)}
+          exit={{ opacity: 0 }}
         >
-          <Card card={card} />
+          <Card card={card} noShadow={shouldBurnPile} />
         </motion.div>
       ))}
+
       <Count count={pile.length} position="top-left" z={99} />
       <AnimatePresence>{!pile.length && <Text />}</AnimatePresence>
+
+      <AnimatePresence>{shouldBurnPile && <FireAnimation />}</AnimatePresence>
     </CardHolder>
+  );
+}
+
+function FireAnimation() {
+  return (
+    <>
+      <motion.div
+        className="absolute top-0 left-0 h-full w-full rounded-lg bg-zinc-800"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: { duration: 0.3, delay: 0.3 },
+        }}
+        exit={{ opacity: 0 }}
+      />
+      <motion.div
+        className="absolute h-full w-full"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{
+          scale: 2.5,
+          y: -50,
+          opacity: 0.95,
+          transition: {
+            type: "tween",
+            delay: 0.35,
+            ease: "easeInOut",
+          },
+        }}
+        exit={{
+          opacity: 0,
+          scale: 1.5,
+          y: 15,
+          transition: {
+            duration: 1.5,
+            type: "tween",
+            ease: "easeInOut",
+          },
+        }}
+      >
+        <Fire />
+      </motion.div>
+    </>
   );
 }
 

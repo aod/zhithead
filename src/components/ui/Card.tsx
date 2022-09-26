@@ -10,6 +10,7 @@ export interface CardProps {
   grayOut?: boolean;
   withSelector?: boolean;
   selectorMax?: number;
+  noShadow?: boolean;
 }
 
 export default function Card(props: CardProps) {
@@ -40,7 +41,8 @@ export default function Card(props: CardProps) {
           },
         }}
         className={clsx(
-          "select-none shadow-lg shadow-zinc-500/40 drop-shadow-xl",
+          "select-none",
+          !props.noShadow && "shadow-lg shadow-zinc-500/40 drop-shadow-xl",
           isFace && "rounded-lg border-white bg-white p-1",
           props.withSelector && "rounded-t-none rounded-b-lg bg-white"
         )}

@@ -93,10 +93,9 @@ to implement the following features:
 - [x] Implement missing rules
   - [x] Burn pile after 4 cards with same rank has been played
   - [x] Play multiple cards of the same rank
-- [ ] Refactor Zhithead state machine
-- [ ] Pile burn animation/UX
-- [ ] Simple homepage with basic info (about, source code, etc.) and a start button
+- [x] Pile burn animation/UX
 - [ ] Final win/lose page
+- [ ] Simple homepage with basic info (about, source code, etc.) and a start button
 - [ ] Teach the player on how to play
 - [ ] ...
 
@@ -104,11 +103,11 @@ to implement the following features:
 
 - [ ] Multiplayer support upto 4 players
   - [ ] Invite link
-- [ ] Rule variations
 - [ ] ...
 
 ## Release
 
+- [ ] Rule variations
 - [ ] User profiles
 - [ ] Matchmaking
 - [ ] Leaderbords

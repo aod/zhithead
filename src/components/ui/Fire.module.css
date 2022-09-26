@@ -1,0 +1,11 @@
+.flame path {
+  animation-name: flame;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes flame {
+  50% {
+    transform: scale(1, 1.2) translate(0, -30px) rotate(-2deg);
+  }
+}
