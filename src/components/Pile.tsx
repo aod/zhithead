@@ -1,12 +1,13 @@
 import { useSelector } from "@xstate/react";
 import { AnimatePresence, motion, TargetAndTransition } from "framer-motion";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { getRank, Rank, Card as TCard } from "../lib";
 import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import Fire from "./ui/Fire";
+import { BreakpointsContext } from "./providers/BreakpointsProvider";
 
 export default function Pile() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -57,6 +58,9 @@ export default function Pile() {
 }
 
 function FireAnimation() {
+  const isBreakpoint = useContext(BreakpointsContext);
+  const isMobile = isBreakpoint("sm");
+
   return (
     <>
       <motion.div
@@ -70,10 +74,15 @@ function FireAnimation() {
       />
       <motion.div
         className="absolute h-full w-full"
-        initial={{ opacity: 0, y: 40 }}
+        initial={{
+          opacity: 0,
+          y: isMobile ? -40 : 40,
+          x: isMobile ? -20 : 0,
+        }}
         animate={{
-          scale: 2.5,
-          y: -50,
+          scale: isMobile ? 1.5 : 2.5,
+          y: isMobile ? -75 : -50,
+          x: isMobile ? -35 : 0,
           opacity: 0.95,
           transition: {
             type: "tween",
@@ -83,8 +92,9 @@ function FireAnimation() {
         }}
         exit={{
           opacity: 0,
-          scale: 1.5,
-          y: 15,
+          scale: isMobile ? 0.5 : 1.5,
+          y: isMobile ? 25 : 15,
+          x: isMobile ? -10 : 0,
           transition: {
             duration: 1.5,
             type: "tween",
