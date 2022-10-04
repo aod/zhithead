@@ -1,5 +1,5 @@
 import { assign } from "@xstate/immer";
-import { ContextFrom, EventFrom, send } from "xstate";
+import { ContextFrom, EventFrom, send, assign as xassign } from "xstate";
 import { createModel } from "xstate/lib/model";
 import {
   asCards,
@@ -12,8 +12,10 @@ import {
   getRank,
   isPileBurnable,
   isPlayerCurHand,
+  makePlayer,
   OffHandCards,
   Player as TPlayer,
+  totalCards,
 } from "../../lib";
 import humanMachine from "./human.machine";
 import { PlayerEvents, barePlayerEvent } from "../shared/player-events";
@@ -62,12 +64,14 @@ export const zhitheadModel = createModel(createInitialContext(), {
     TAKE_CARD: () => ({}),
     TAKE_PILE: () => ({}),
     SORT_HAND: () => ({}),
+    NEW_GAME: () => ({}),
     ...barePlayerEvent("CARD_CHOSEN"),
   },
 });
 
 export const zhitheadMachine = zhitheadModel.createMachine(
   {
+    predictableActionArguments: true,
     invoke: [
       { src: humanMachine, id: "human" },
       { src: createBotService(), id: "bot" },
@@ -140,7 +144,9 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                       "takePile",
                       "switchTurns",
                     ],
-                    cond: (context) => context.currentTurn === "human",
+                    cond: (context) =>
+                      context.currentTurn === "human" &&
+                      totalCards(context.bot) > 0,
                   },
                 },
               },
@@ -150,6 +156,20 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                   600: {
                     actions: "burnPile",
                     cond: (context) => isPileBurnable(context.pile),
+                  },
+                  601: {
+                    target: "#won",
+                    cond: (context) =>
+                      (!context.pile.length ||
+                        _canPlay(
+                          context.pile.at(-1)!,
+                          context.pile.slice(0, -1)
+                        )) &&
+                      totalCards(context.human) === 0,
+                  },
+                  602: {
+                    target: "#lost",
+                    cond: (context) => totalCards(context.bot) === 0,
                   },
                   700: {
                     actions: "takeCard",
@@ -180,7 +200,7 @@ export const zhitheadMachine = zhitheadModel.createMachine(
                         ),
                     },
                     {
-                      actions: ["takePile", "switchTurns"],
+                      actions: ["takePile", "changeSwitcher", "switchTurns"],
                       target: "#loop.waitForMove",
                       cond: (context) =>
                         context.currentTurn === "bot" &&
@@ -220,10 +240,33 @@ export const zhitheadMachine = zhitheadModel.createMachine(
           },
         },
       },
+      won: {
+        id: "won",
+        on: {
+          NEW_GAME: {
+            actions: ["emptyCards", "createNewGame"],
+            target: "choosingFaceUpCards",
+          },
+        },
+      },
+      lost: {
+        id: "lost",
+        on: {
+          NEW_GAME: {
+            actions: ["emptyCards", "createNewGame"],
+            target: "choosingFaceUpCards",
+          },
+        },
+      },
     },
   },
   {
     actions: {
+      createNewGame: xassign(createInitialContext()),
+      emptyCards: assign((context) => {
+        context.human = makePlayer();
+        context.bot = makePlayer();
+      }),
       switchTurns: assign((context) => {
         context.currentTurn = context.currentTurn === "bot" ? "human" : "bot";
       }),

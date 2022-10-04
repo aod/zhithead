@@ -8,6 +8,7 @@ type HumanEvents =
   | { type: "CHOOSE_CARD"; card: Card; n?: number };
 
 const humanMachine = createMachine<null, HumanEvents>({
+  predictableActionArguments: true,
   id: "human",
   initial: "idle",
   states: {

@@ -19,6 +19,7 @@ export default function SortButton() {
       title="Sort your hand"
       initial={{ y: 100 }}
       animate={{ y: !handLength ? 100 : 0 }}
+      exit={{ y: 100 }}
       whileHover={{ scale: 1.15 }}
       whileTap={{ scale: 0.9 }}
     >

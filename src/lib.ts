@@ -118,8 +118,15 @@ export function makePlayer(): Player {
   };
 }
 
-const handKinds = ["hand", "faceUp", "faceDown"] as const;
-type HandKind = typeof handKinds[number];
+export function totalCards(player: Player) {
+  return HandKinds.map((handKind) => playerHandLen(player, handKind)).reduce(
+    (sum, len) => sum + len,
+    0
+  );
+}
+
+export const HandKinds = ["hand", "faceUp", "faceDown"] as const;
+type HandKind = typeof HandKinds[number];
 
 export function offHandLen(cards: OffHandCards) {
   return cards.filter((card) => card !== undefined).length;
@@ -136,7 +143,7 @@ export function playerHandLen(player: Player, kind: HandKind) {
 }
 
 function playerCurHand(player: Player): HandKind | undefined {
-  return handKinds.find((kind) => playerHandLen(player, kind) > 0);
+  return HandKinds.find((kind) => playerHandLen(player, kind) > 0);
 }
 
 export function isPlayerCurHand(player: Player, ...kinds: HandKind[]) {

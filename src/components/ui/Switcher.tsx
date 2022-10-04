@@ -12,12 +12,13 @@ interface SwitcherProps {
 
 export default function Switcher(props: SwitcherProps) {
   const layoutGroupId = useId();
-  const flippedSign = props.position === "top" ? -1 : 1;
+  const sign = props.position === "top" ? -1 : 1;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 100 * flippedSign }}
+      initial={{ opacity: 0, y: 100 * sign }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 100 * sign }}
       className="flex items-center justify-center"
     >
       <div className="flex items-center rounded-full border-4 border-black bg-black">

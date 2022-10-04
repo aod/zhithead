@@ -1,5 +1,5 @@
 import { useSelector } from "@xstate/react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import Deck from "./Deck";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
@@ -7,8 +7,13 @@ import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
 import ShownHand from "./ShownHand";
 import Switcher from "./Switcher";
-import { isChoosingFaceUpCardsStor, isPlayingStor } from "../state/selectors";
+import {
+  isChoosingFaceUpCardsStor,
+  isGameOverStor,
+  isPlayingStor,
+} from "../state/selectors";
 import SortButton from "./SortButton";
+import ResultOverlay from "./ResultOverlay";
 
 export default function App() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -17,6 +22,7 @@ export default function App() {
     zhitheadService,
     isChoosingFaceUpCardsStor
   );
+  const isGameOver = useSelector(zhitheadService, isGameOverStor);
 
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   useEffect(() => {
@@ -30,13 +36,19 @@ export default function App() {
       className="grid grid-rows-3 overflow-hidden bg-zinc-800"
       style={{ height: windowHeight }}
     >
+      <AnimatePresence>{isGameOver && <ResultOverlay />}</AnimatePresence>
+
       <div className="relative">
-        {isPlaying && (
+        {(isPlaying || isGameOver) && (
           <>
             <ShownHand player="bot" />
-            <div className="absolute top-2 z-10 mx-auto w-full">
-              <Switcher player="bot" />
-            </div>
+            <AnimatePresence>
+              {isPlaying && (
+                <div className="absolute top-2 z-10 mx-auto w-full">
+                  <Switcher player="bot" />
+                </div>
+              )}
+            </AnimatePresence>
           </>
         )}
       </div>
@@ -50,7 +62,7 @@ export default function App() {
           <HumanOffHand />
         </motion.div>
       )}
-      {isPlaying && (
+      {!isChoosingFaceUpCards && (
         <motion.div
           initial={{ opacity: 0.4 }}
           animate={{ opacity: 1 }}
@@ -62,12 +74,14 @@ export default function App() {
       )}
 
       <div className="relative pt-4">
-        {isPlaying && (
-          <div className="absolute -left-6 bottom-2 z-10 mx-auto flex w-full items-center justify-center gap-4">
-            <SortButton />
-            <Switcher player="human" />
-          </div>
-        )}
+        <AnimatePresence>
+          {isPlaying && (
+            <div className="absolute -left-6 bottom-2 z-10 mx-auto flex w-full items-center justify-center gap-4">
+              <SortButton />
+              <Switcher player="human" />
+            </div>
+          )}
+        </AnimatePresence>
         <ShownHand player="human" />
       </div>
     </main>

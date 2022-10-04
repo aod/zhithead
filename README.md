@@ -94,7 +94,7 @@ to implement the following features:
   - [x] Burn pile after 4 cards with same rank has been played
   - [x] Play multiple cards of the same rank
 - [x] Pile burn animation/UX
-- [ ] Final win/lose page
+- [x] Final win/lose page
 - [ ] Simple homepage with basic info (about, source code, etc.) and a start button
 - [ ] Teach the player on how to play
 - [ ] ...

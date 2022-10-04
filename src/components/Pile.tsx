@@ -1,6 +1,6 @@
 import { useSelector } from "@xstate/react";
 import { AnimatePresence, motion, TargetAndTransition } from "framer-motion";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { getRank, Rank, Card as TCard } from "../lib";
 import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
