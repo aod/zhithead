@@ -264,6 +264,8 @@ export const zhitheadMachine = zhitheadModel.createMachine(
     actions: {
       createNewGame: xassign(createInitialContext()),
       emptyCards: assign((context) => {
+        context.pile = [];
+        context.deck = [];
         context.human = makePlayer();
         context.bot = makePlayer();
       }),
