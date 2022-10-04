@@ -37,7 +37,7 @@ export default function ResultOverlay() {
     hidden: {
       y: 40,
       opacity: 0,
-      transition: { type: "tween " },
+      transition: { type: "tween" },
     },
     show: {
       y: 0,
