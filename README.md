@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="https://zhithead.yatko.dev">
-    <img src=".readme/zhithead.svg" height="210">
+    <img src="public/logo/zhithead.svg" height="210">
     <h1 align="center"><b>Zhithead</b></h1>
   </a>
 </p>
@@ -95,7 +95,7 @@ to implement the following features:
   - [x] Play multiple cards of the same rank
 - [x] Pile burn animation/UX
 - [x] Final win/lose page
-- [ ] Simple homepage with basic info (about, source code, etc.) and a start button
+- [x] Simple title screen with basic info (about, source code, etc.) and a start button
 - [ ] Teach the player on how to play
 - [ ] ...
 

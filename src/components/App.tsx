@@ -14,6 +14,7 @@ import {
 } from "../state/selectors";
 import SortButton from "./SortButton";
 import ResultOverlay from "./ResultOverlay";
+import TitleScreenOverlay from "./TitleScreenOverlay";
 
 export default function App() {
   const { zhitheadService } = useContext(GlobalStateContext);
@@ -31,12 +32,19 @@ export default function App() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const [hasStarted, setHasStarted] = useState(false);
+
   return (
     <main
-      className="grid grid-rows-3 overflow-hidden bg-zinc-800"
+      className="relative grid grid-rows-3 overflow-hidden bg-gradient-to-r from-black via-emerald-800 to-black"
       style={{ height: windowHeight }}
     >
-      <AnimatePresence>{isGameOver && <ResultOverlay />}</AnimatePresence>
+      <AnimatePresence>
+        {isGameOver && <ResultOverlay />}
+        {!hasStarted && (
+          <TitleScreenOverlay onPlay={() => setHasStarted(true)} />
+        )}
+      </AnimatePresence>
 
       <div className="relative">
         {(isPlaying || isGameOver) && (

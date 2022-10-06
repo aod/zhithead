@@ -14,6 +14,10 @@ export default function Pile() {
   const pile = useSelector(zhitheadService, (state) => state.context.pile);
   const { send } = zhitheadService;
 
+  const topCard = pile.at(-1);
+  const shouldBurnPile =
+    topCard !== undefined && getRank(topCard) === Rank.Num10;
+
   function animate(card: TCard): TargetAndTransition {
     const is8 = getRank(card) === Rank.Num8;
     const firstNon8AfterCard = pile
@@ -22,18 +26,15 @@ export default function Pile() {
     const shouldAnimate = is8 && firstNon8AfterCard === undefined;
 
     return {
+      opacity: shouldBurnPile ? 0 : 1,
       x: shouldAnimate ? 25 : 0,
       y: shouldAnimate ? 20 : 0,
       transition: {
-        delay: shouldAnimate ? 0.6 : 0.1,
+        delay: shouldAnimate ? 0.6 : 0.3,
         type: "tween",
       },
     };
   }
-
-  const topCard = pile.at(-1);
-  const shouldBurnPile =
-    topCard !== undefined && getRank(topCard) === Rank.Num10;
 
   return (
     <CardHolder>
@@ -43,7 +44,6 @@ export default function Pile() {
           key={card}
           onClick={() => send({ type: "TAKE_PILE" })}
           animate={animate(card)}
-          exit={{ opacity: 0 }}
         >
           <Card card={card} noShadow={shouldBurnPile} />
         </motion.div>
@@ -62,49 +62,38 @@ function FireAnimation() {
   const isMobile = isBreakpoint("sm");
 
   return (
-    <>
-      <motion.div
-        className="absolute top-0 left-0 h-full w-full rounded-lg bg-zinc-800"
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: 1,
-          transition: { duration: 0.3, delay: 0.3 },
-        }}
-        exit={{ opacity: 0 }}
-      />
-      <motion.div
-        className="absolute h-full w-full"
-        initial={{
-          opacity: 0,
-          y: isMobile ? -40 : 40,
-          x: isMobile ? -20 : 0,
-        }}
-        animate={{
-          scale: isMobile ? 1.5 : 2.5,
-          y: isMobile ? -75 : -50,
-          x: isMobile ? -35 : 0,
-          opacity: 0.95,
-          transition: {
-            type: "tween",
-            delay: 0.35,
-            ease: "easeInOut",
-          },
-        }}
-        exit={{
-          opacity: 0,
-          scale: isMobile ? 0.5 : 1.5,
-          y: isMobile ? 25 : 15,
-          x: isMobile ? -10 : 0,
-          transition: {
-            duration: 1.5,
-            type: "tween",
-            ease: "easeInOut",
-          },
-        }}
-      >
-        <Fire />
-      </motion.div>
-    </>
+    <motion.div
+      className="absolute h-full w-full"
+      initial={{
+        opacity: 0,
+        y: isMobile ? -40 : 40,
+        x: isMobile ? -20 : 0,
+      }}
+      animate={{
+        scale: isMobile ? 1.5 : 2.5,
+        y: isMobile ? -75 : -50,
+        x: isMobile ? -35 : 0,
+        opacity: 1,
+        transition: {
+          type: "tween",
+          delay: 0.35,
+          ease: "easeInOut",
+        },
+      }}
+      exit={{
+        opacity: 0,
+        scale: isMobile ? 0.5 : 1.5,
+        y: isMobile ? 25 : 15,
+        x: isMobile ? -10 : 0,
+        transition: {
+          duration: 1.5,
+          type: "tween",
+          ease: "easeInOut",
+        },
+      }}
+    >
+      <Fire />
+    </motion.div>
   );
 }
 
@@ -114,7 +103,7 @@ function Text() {
       className="absolute flex h-full w-full items-center justify-center"
       exit={{ opacity: 0, transition: { duration: 0.15 } }}
     >
-      <span className="select-none text-xl font-semibold tracking-wide text-zinc-600 md:text-4xl md:font-bold md:tracking-wider">
+      <span className="select-none text-xl font-semibold tracking-wide text-zinc-200 md:text-4xl md:font-bold md:tracking-wider">
         PILE
       </span>
     </motion.div>
