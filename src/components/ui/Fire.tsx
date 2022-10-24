@@ -41,7 +41,7 @@ export default function Fire() {
 	C95.354,106.319,99.92,114.108,99.92,101.754z"
       />
       <path
-        className="[animation-duration:1.6s] [animation-delay:1s]"
+        className="[animation-delay:1s] [animation-duration:1.6s]"
         fill="#F36E21"
         d="M103.143,105.917c0,0,8.927,30.753-1.043,46.868c-9.969,16.115-14.799,29.041-14.799,29.041
 	S134.387,164.603,103.143,105.917z"
