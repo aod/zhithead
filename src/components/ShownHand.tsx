@@ -19,11 +19,13 @@ export default function ShownHand(props: ShownHandProps) {
     selectors.isChoosingFaceUpCards
   );
   const shownHand = GlobalStateContext.useSelector(
-    selectors.getShownHand(props.player)
+    selectors.getPlayerShownHand(props.player)
   );
-  const hand = GlobalStateContext.useSelector(selectors.getHand(props.player));
+  const hand = GlobalStateContext.useSelector(
+    selectors.getPlayerHand(props.player)
+  );
   const offHand = GlobalStateContext.useSelector(
-    selectors.getOffHand(props.player)
+    selectors.getPlayerOffHand(props.player)
   );
   const pile = GlobalStateContext.useSelector(selectors.getPile);
   const human = GlobalStateContext.useSelector(selectors.getHumanActor);

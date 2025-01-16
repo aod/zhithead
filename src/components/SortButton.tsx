@@ -6,9 +6,7 @@ import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
 export default function SortButton() {
   const { send } = GlobalStateContext.useActorRef();
-  const handLength = GlobalStateContext.useSelector(
-    selectors.getHumanHandLength
-  );
+  const hand = GlobalStateContext.useSelector(selectors.getPlayerHand("human"));
 
   return (
     <motion.button
@@ -16,7 +14,7 @@ export default function SortButton() {
       className="flex items-center justify-center rounded-full bg-black p-1.5 sm:p-2"
       title="Sort your hand"
       initial={{ y: 100 }}
-      animate={{ y: !handLength ? 100 : 0 }}
+      animate={{ y: !hand.length ? 100 : 0 }}
       exit={{ y: 100 }}
       whileHover={{ scale: 1.15 }}
       whileTap={{ scale: 0.9 }}

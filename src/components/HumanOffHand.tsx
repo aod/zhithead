@@ -6,7 +6,9 @@ import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import OffHand from "./ui/OffHand";
 
 export default function HumanOffHand() {
-  const offHand = GlobalStateContext.useSelector(selectors.getHumanOffHand);
+  const offHand = GlobalStateContext.useSelector(
+    selectors.getPlayerOffHand("human")
+  );
   const isChoosingFaceUpCards = GlobalStateContext.useSelector(
     selectors.isChoosingFaceUpCards
   );
