@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+
 import { Card as TCard, getRank, Player } from "../../lib";
+
 import Card from "./Card";
 import CardHolder from "./CardHolder";
 

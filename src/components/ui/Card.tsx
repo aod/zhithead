@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
+
 import { Card as TCard, getRank, getSuite, Rank, Suite } from "../../lib";
 
 export interface CardProps {

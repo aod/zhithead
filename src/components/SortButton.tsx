@@ -1,20 +1,18 @@
-import { useSelector } from "@xstate/react";
 import { motion } from "framer-motion";
 import { SortAsc } from "lucide-react";
-import { useContext } from "react";
+
+import * as selectors from "../state/selectors";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
 export default function SortButton() {
-  const { zhitheadService } = useContext(GlobalStateContext);
-  const { send } = zhitheadService;
-  const handLength = useSelector(
-    zhitheadService,
-    (state) => state.context.human.hand.length
+  const { send } = GlobalStateContext.useActorRef();
+  const handLength = GlobalStateContext.useSelector(
+    selectors.getHumanHandLength
   );
 
   return (
     <motion.button
-      onClick={() => send("SORT_HAND")}
+      onClick={() => send({ type: "SORT_HAND" })}
       className="flex items-center justify-center rounded-full bg-black p-1.5 sm:p-2"
       title="Sort your hand"
       initial={{ y: 100 }}

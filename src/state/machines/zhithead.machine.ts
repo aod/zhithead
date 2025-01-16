@@ -1,9 +1,9 @@
-import { assign } from "@xstate/immer";
-import { ContextFrom, EventFrom, send, assign as xassign } from "xstate";
-import { createModel } from "xstate/lib/model";
+import produce from "immer";
+import { assign, sendTo, setup } from "xstate";
+
 import {
   asCards,
-  canPlay as _canPlay,
+  canPlay,
   Card,
   Cards,
   compareCards,
@@ -11,14 +11,14 @@ import {
   dealCardsFor,
   getRank,
   isPileBurnable,
-  isPlayerCurHand,
+  isPlayerCurrentHand,
   makePlayer,
   OffHandCards,
   Player as TPlayer,
   totalCards,
+  shuffle,
 } from "../../lib";
 import humanMachine from "./human.machine";
-import { PlayerEvents, barePlayerEvent } from "../shared/player-events";
 import { createBotService } from "../services/bot.service";
 
 export type Player = "bot" | "human";
@@ -55,242 +55,57 @@ function createInitialContext(): ZhitheadContext {
   };
 }
 
-export const zhitheadModel = createModel(createInitialContext(), {
-  events: {
-    SET_SHOWN_HAND: (player: Player, shownHand: ShownHand) => ({
-      shownHand,
-      player,
+export const zhitheadMachine = setup({
+  actors: {
+    human: humanMachine,
+    bot: createBotService,
+  },
+  types: {
+    context: {} as ZhitheadContext,
+    events: {} as
+      | { type: "TAKE_CARD" }
+      | { type: "TAKE_PILE" }
+      | { type: "CARD_CHOSEN"; card?: Card; n?: number }
+      | { type: "SORT_HAND" }
+      | { type: "SET_SHOWN_HAND"; player: Player; shownHand: ShownHand }
+      | { type: "NEW_GAME" },
+  },
+  actions: {
+    createNewGame: assign(createInitialContext()),
+    emptyCards: assign({
+      pile: [],
+      deck: [],
+      human: makePlayer(),
+      bot: makePlayer(),
     }),
-    TAKE_CARD: () => ({}),
-    TAKE_PILE: () => ({}),
-    SORT_HAND: () => ({}),
-    NEW_GAME: () => ({}),
-    ...barePlayerEvent("CARD_CHOSEN"),
-  },
-});
-
-export const zhitheadMachine = zhitheadModel.createMachine(
-  {
-    predictableActionArguments: true,
-    invoke: [
-      { src: humanMachine, id: "human" },
-      { src: createBotService(), id: "bot" },
-    ],
-    initial: "choosingFaceUpCards",
-    context: zhitheadModel.initialContext,
-    states: {
-      choosingFaceUpCards: {
-        after: {
-          500: { target: "playing", cond: hasChoosenAllFaceUpCards },
-        },
-        entry: send(
-          (context) =>
-            PlayerEvents["ASK_PICK_CARD"](
-              context.pile,
-              context[context.currentTurn]
-            ),
-          { to: () => "human" }
-        ),
-        on: {
-          CARD_CHOSEN: {
-            actions: ["playToOffhand"],
-            target: "choosingFaceUpCards",
-            cond: (context) => !hasChoosenAllFaceUpCards(context),
-          },
-        },
-      },
-      playing: {
-        initial: "loop",
-        type: "parallel",
-        states: {
-          loop: {
-            initial: "waitForMove",
-            id: "loop",
-            states: {
-              waitForMove: {
-                entry: [
-                  send(
-                    (context) =>
-                      PlayerEvents["ASK_PICK_CARD"](
-                        context.pile,
-                        context[context.currentTurn]
-                      ),
-                    { to: (ctx) => ctx.currentTurn }
-                  ),
-                  "changeSwitcher",
-                ],
-                on: {
-                  CARD_CHOSEN: [
-                    {
-                      target: "#loop.waitForMove",
-                      actions: ["takePile", "changeSwitcher", "switchTurns"],
-                      // Bot returns undefined when no cards could be played.
-                      // event.card from human should never be null.
-                      cond: (_, event) => event.card === undefined,
-                    },
-                    {
-                      target: "#loop.afterPlay",
-                      actions: "play",
-                      cond: canPlay,
-                    },
-                    {
-                      target: "#loop.waitForMove", // Ask again
-                    },
-                  ],
-                  TAKE_PILE: {
-                    target: "#loop.waitForMove",
-                    actions: [
-                      assign((context) => (context.shownHand.human = "hand")),
-                      "takePile",
-                      "switchTurns",
-                    ],
-                    cond: (context) =>
-                      context.currentTurn === "human" &&
-                      totalCards(context.bot) > 0,
-                  },
-                },
-              },
-              afterPlay: {
-                entry: "changeSwitcher",
-                after: {
-                  600: {
-                    actions: "burnPile",
-                    cond: (context) => isPileBurnable(context.pile),
-                  },
-                  601: {
-                    target: "#won",
-                    cond: (context) =>
-                      (!context.pile.length ||
-                        _canPlay(
-                          context.pile.at(-1)!,
-                          context.pile.slice(0, -1)
-                        )) &&
-                      totalCards(context.human) === 0,
-                  },
-                  602: {
-                    target: "#lost",
-                    cond: (context) => totalCards(context.bot) === 0,
-                  },
-                  700: {
-                    actions: "takeCard",
-                    cond: (context) =>
-                      context.deck.length > 0 &&
-                      context[context.currentTurn].hand.length < 3,
-                    target: "#loop.afterPlay",
-                  },
-                  1000: [
-                    {
-                      actions: ["switchTurns"],
-                      target: "#loop.waitForMove",
-                      cond: (context) =>
-                        isPlayerCurHand(
-                          context[context.currentTurn],
-                          "hand",
-                          "faceUp"
-                        ),
-                    },
-                    {
-                      target: "#loop.waitForMove",
-                      cond: (context) =>
-                        context.currentTurn === "human" &&
-                        context.pile.length > 0 &&
-                        !_canPlay(
-                          context.pile.at(-1)!,
-                          context.pile.slice(0, -1)
-                        ),
-                    },
-                    {
-                      actions: ["takePile", "changeSwitcher", "switchTurns"],
-                      target: "#loop.waitForMove",
-                      cond: (context) =>
-                        context.currentTurn === "bot" &&
-                        context.pile.length > 0 &&
-                        !_canPlay(
-                          context.pile.at(-1)!,
-                          context.pile.slice(0, -1)
-                        ),
-                    },
-                    {
-                      actions: "switchTurns",
-                      target: "#loop.waitForMove",
-                    },
-                  ],
-                  1300: { actions: "changeSwitcher" },
-                },
-              },
-            },
-          },
-          switcher: {
-            on: {
-              SET_SHOWN_HAND: {
-                actions: assign((context, event) => {
-                  context.shownHand[event.player] = event.shownHand;
-                }),
-              },
-            },
-          },
-          sorter: {
-            on: {
-              SORT_HAND: {
-                actions: assign((context) => {
-                  context.human.hand.sort(compareCards);
-                }),
-              },
-            },
-          },
-        },
-      },
-      won: {
-        id: "won",
-        on: {
-          NEW_GAME: {
-            actions: ["emptyCards", "createNewGame"],
-            target: "choosingFaceUpCards",
-          },
-        },
-      },
-      lost: {
-        id: "lost",
-        on: {
-          NEW_GAME: {
-            actions: ["emptyCards", "createNewGame"],
-            target: "choosingFaceUpCards",
-          },
-        },
-      },
-    },
-  },
-  {
-    actions: {
-      createNewGame: xassign(createInitialContext()),
-      emptyCards: assign((context) => {
-        context.pile = [];
-        context.deck = [];
-        context.human = makePlayer();
-        context.bot = makePlayer();
-      }),
-      switchTurns: assign((context) => {
-        context.currentTurn = context.currentTurn === "bot" ? "human" : "bot";
-      }),
-      playToOffhand: assign((context, event) => {
-        if (event.type !== "CARD_CHOSEN") return;
-        context.human.offHand.faceUp.push(
-          context.human.hand.find((c) => c === event.card!)!
+    switchTurns: assign({
+      currentTurn: ({ context }) =>
+        context.currentTurn === "bot" ? "human" : "bot",
+    }),
+    placeInOffhand: assign(({ context, event }) =>
+      produce(context, (draft) => {
+        if (event.type !== "CARD_CHOSEN") {
+          return;
+        }
+        draft.human.offHand.faceUp.push(
+          draft.human.hand.find((c) => c === event.card)
         );
-        context.human.hand.splice(context.human.hand.indexOf(event.card!), 1);
-      }),
-      play: assign((context, event) => {
+        draft.human.hand.splice(draft.human.hand.indexOf(event.card!), 1);
+      })
+    ),
+    play: assign(({ context, event }) =>
+      produce(context, (draft) => {
         if (event.type !== "CARD_CHOSEN") return;
 
-        const player = currentPlayer(context);
+        const player = draft[draft.currentTurn];
         const playedCard = event.card!;
 
-        if (isPlayerCurHand(player, "faceDown")) {
+        if (isPlayerCurrentHand(player, "faceDown")) {
           const hand = player.offHand.faceDown;
-          context.pile.push(playedCard);
+          draft.pile.push(playedCard);
           hand[hand.indexOf(playedCard)] = undefined;
         } else {
-          const isHand = isPlayerCurHand(player, "hand");
+          const isHand = isPlayerCurrentHand(player, "hand");
           const hand = isHand ? player.hand : player.offHand.faceUp;
 
           const toPlay: Cards = [playedCard];
@@ -303,61 +118,241 @@ export const zhitheadMachine = zhitheadModel.createMachine(
           }
 
           for (const card of toPlay) {
-            context.pile.push(card);
+            draft.pile.push(card);
             if (isHand) hand.splice(hand.indexOf(card), 1);
             else hand[hand.indexOf(card)] = undefined;
           }
         }
-      }),
-      takePile: assign((context) => {
-        const player = currentPlayer(context);
-        player.hand.push(...context.pile);
-        context.pile = [];
-      }),
-      takeCard: assign((context) => {
-        const card = context.deck.pop();
-        if (card !== undefined) context[context.currentTurn].hand.push(card);
-      }),
-      burnPile: assign((context) => {
-        context.pile = [];
-      }),
-      changeSwitcher: assign((context) => {
-        if (isPlayerCurHand(currentPlayer(context), "hand")) {
-          context.shownHand[context.currentTurn] = "hand";
+      })
+    ),
+    takePile: assign(({ context }) =>
+      produce(context, (draft) => {
+        const player = draft[draft.currentTurn];
+        player.hand.push(...draft.pile);
+        draft.pile = [];
+      })
+    ),
+    takeCard: assign(({ context }) =>
+      produce(context, (draft) => {
+        const card = draft.deck.pop();
+        if (card !== undefined) draft[draft.currentTurn].hand.push(card);
+      })
+    ),
+    burnPile: assign(() => ({ pile: [] })),
+    changeSwitcher: assign(({ context }) =>
+      produce(context, (draft) => {
+        if (isPlayerCurrentHand(draft[draft.currentTurn], "hand")) {
+          draft.shownHand[draft.currentTurn] = "hand";
         } else {
-          context.shownHand[context.currentTurn] = "offhand";
+          draft.shownHand[draft.currentTurn] = "offhand";
         }
-      }),
+      })
+    ),
+    showHand: assign(({ context }) =>
+      produce(context, (draft) => {
+        draft.shownHand.human = "hand";
+      })
+    ),
+  },
+  guards: {
+    hasChosenAllFaceUpCards: ({ context }) =>
+      context.human.offHand.faceUp.length === 3,
+    canPlay: ({ context, event }) => {
+      if (event.type !== "CARD_CHOSEN") {
+        return false;
+      }
+
+      const player = context[context.currentTurn];
+      if (isPlayerCurrentHand(player, "faceDown")) {
+        return true;
+      }
+
+      const hands = [player.hand, asCards(player.offHand.faceUp)];
+      const hand = hands.find((hand) => hand.length) ?? [];
+      return hand.includes(event.card!) && canPlay(event.card!, context.pile);
     },
-  }
-);
-
-function currentPlayer(context: ContextFrom<typeof zhitheadModel>) {
-  return context[context.currentTurn];
-}
-
-function hasChoosenAllFaceUpCards(
-  context: ContextFrom<typeof zhitheadModel>
-): boolean {
-  return context.human.offHand.faceUp.length === 3;
-}
-
-function canPlay(
-  context: ContextFrom<typeof zhitheadModel>,
-  event: EventFrom<typeof zhitheadModel>
-): boolean {
-  if (event.type !== "CARD_CHOSEN") return false;
-  const player = currentPlayer(context);
-  if (isPlayerCurHand(player, "faceDown")) return true;
-  const hands = [player.hand, asCards(player.offHand.faceUp)];
-  const hand = hands.find((hand) => hand.length) ?? [];
-  return hand.includes(event.card!) && _canPlay(event.card!, context.pile);
-}
-
-function shuffle<T>(array: T[]): T[] {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+  },
+}).createMachine({
+  invoke: [
+    { src: "human", id: "human", input: ({ self }) => ({ parentRef: self }) },
+    { src: "bot", id: "bot" },
+  ],
+  initial: "choosingFaceUpCards",
+  context: createInitialContext(),
+  states: {
+    choosingFaceUpCards: {
+      entry: sendTo("human", ({ context }) => ({
+        type: "ASK_PICK_CARD",
+        pile: context.pile,
+        player: context[context.currentTurn],
+      })),
+      after: {
+        500: {
+          target: "playing",
+          guard: "hasChosenAllFaceUpCards",
+        },
+      },
+      on: {
+        CARD_CHOSEN: {
+          actions: "placeInOffhand",
+          target: "choosingFaceUpCards",
+          // guard: not("hasChosenAllFaceUpCards"),
+          reenter: true,
+        },
+      },
+    },
+    playing: {
+      type: "parallel",
+      states: {
+        loop: {
+          id: "loop",
+          initial: "waitForMove",
+          states: {
+            waitForMove: {
+              entry: [
+                sendTo(
+                  ({ context }) => context.currentTurn,
+                  ({ context }) => ({
+                    type: "ASK_PICK_CARD",
+                    pile: context.pile,
+                    player: context[context.currentTurn],
+                  })
+                ),
+                "changeSwitcher",
+              ],
+              on: {
+                CARD_CHOSEN: [
+                  {
+                    target: "#loop.waitForMove",
+                    actions: ["takePile", "changeSwitcher", "switchTurns"],
+                    // Bot returns undefined when no cards could be played.
+                    // event.card from human should never be null.
+                    guard: ({ event }) => event.card === undefined,
+                    reenter: true,
+                  },
+                  {
+                    target: "#loop.afterPlay",
+                    actions: "play",
+                    guard: "canPlay",
+                  },
+                  {
+                    target: "#loop.waitForMove", // Ask again
+                    reenter: true,
+                  },
+                ],
+                TAKE_PILE: {
+                  target: "#loop.waitForMove",
+                  actions: ["showHand", "takePile", "switchTurns"],
+                  guard: ({ context }) => context.currentTurn === "human",
+                  reenter: true,
+                },
+              },
+            },
+            afterPlay: {
+              entry: "changeSwitcher",
+              after: {
+                600: {
+                  actions: "burnPile",
+                  guard: ({ context }) => isPileBurnable(context.pile),
+                },
+                601: {
+                  target: "#won",
+                  guard: ({ context }) =>
+                    (!context.pile.length ||
+                      canPlay(
+                        context.pile.at(-1)!,
+                        context.pile.slice(0, -1)
+                      )) &&
+                    totalCards(context.human) === 0,
+                },
+                602: {
+                  target: "#lost",
+                  guard: ({ context }) => totalCards(context.bot) === 0,
+                },
+                700: {
+                  actions: "takeCard",
+                  guard: ({ context }) =>
+                    context.deck.length > 0 &&
+                    context[context.currentTurn].hand.length < 3,
+                  target: "#loop.afterPlay",
+                },
+                1000: [
+                  {
+                    actions: ["switchTurns"],
+                    target: "#loop.waitForMove",
+                    guard: ({ context }) =>
+                      isPlayerCurrentHand(
+                        context[context.currentTurn],
+                        "hand",
+                        "faceUp"
+                      ),
+                  },
+                  {
+                    target: "#loop.waitForMove",
+                    guard: ({ context }) =>
+                      context.currentTurn === "human" &&
+                      context.pile.length > 0 &&
+                      !canPlay(context.pile.at(-1)!, context.pile.slice(0, -1)),
+                  },
+                  {
+                    actions: ["takePile", "changeSwitcher", "switchTurns"],
+                    target: "#loop.waitForMove",
+                    guard: ({ context }) =>
+                      context.currentTurn === "bot" &&
+                      context.pile.length > 0 &&
+                      !canPlay(context.pile.at(-1)!, context.pile.slice(0, -1)),
+                  },
+                  {
+                    actions: "switchTurns",
+                    target: "#loop.waitForMove",
+                  },
+                ],
+                1300: { actions: "changeSwitcher" },
+              },
+            },
+          },
+        },
+        switcher: {
+          on: {
+            SET_SHOWN_HAND: {
+              actions: assign(({ context, event }) =>
+                produce(context, (draft) => {
+                  draft.shownHand[event.player] = event.shownHand;
+                })
+              ),
+            },
+          },
+        },
+        sorter: {
+          on: {
+            SORT_HAND: {
+              actions: assign(({ context }) =>
+                produce(context, (draft) => {
+                  draft.human.hand.sort(compareCards);
+                })
+              ),
+            },
+          },
+        },
+      },
+    },
+    won: {
+      id: "won",
+      on: {
+        NEW_GAME: {
+          actions: ["emptyCards", "createNewGame"],
+          target: "choosingFaceUpCards",
+        },
+      },
+    },
+    lost: {
+      id: "lost",
+      on: {
+        NEW_GAME: {
+          actions: ["emptyCards", "createNewGame"],
+          target: "choosingFaceUpCards",
+        },
+      },
+    },
+  },
+});

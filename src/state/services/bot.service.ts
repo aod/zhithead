@@ -1,35 +1,43 @@
-import { ContextFrom, EventFrom, InvokeCreator } from "xstate";
+import { fromCallback } from "xstate";
+
 import { bot } from "../../bot";
-import { zhitheadModel } from "../machines/zhithead.machine";
+import { Card, Pile, Player } from "../../lib";
 
 const MIN_DELAY = 450;
 const MAX_DELAY = 750;
 
-export function createBotService(): InvokeCreator<
-  ContextFrom<typeof zhitheadModel>,
-  EventFrom<typeof zhitheadModel>
-> {
-  return () => (callback, onReceive) => {
-    let id: ReturnType<typeof delayedTimeout>;
+type Events =
+  | {
+      type: "ASK_PICK_CARD";
+      pile: Pile;
+      player: Player;
+    }
+  | {
+      type: "CHOOSE_CARD";
+      card: Card;
+      n?: number;
+    };
 
-    // TODO: How to get correct typing here?
-    onReceive((e) => {
-      if (e.type === "ASK_PICK_CARD") {
-        id = delayedTimeout(MIN_DELAY, MAX_DELAY, () =>
-          callback({
-            type: "CARD_CHOSEN",
-            card: bot(e.pile, e.player),
-            n: undefined,
-          })
-        );
+export const createBotService = fromCallback<Events>(
+  ({ receive, sendBack }) => {
+    let id: number | undefined;
+    receive((event) => {
+      if (event.type !== "ASK_PICK_CARD") {
+        return;
       }
+      id = delayedTimeout(MIN_DELAY, MAX_DELAY, () =>
+        sendBack({
+          type: "CARD_CHOSEN",
+          card: bot(event.pile, event.player),
+          n: undefined,
+        })
+      );
     });
-
     return () => clearTimeout(id);
-  };
-}
+  }
+);
 
 function delayedTimeout(low: number, high: number, cb: () => void) {
   const timeout = low + Math.floor(Math.random() * (high - low));
-  return setTimeout(cb, timeout);
+  return window.setTimeout(cb, timeout);
 }

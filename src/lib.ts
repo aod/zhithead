@@ -146,7 +146,7 @@ function playerCurHand(player: Player): HandKind | undefined {
   return HandKinds.find((kind) => playerHandLen(player, kind) > 0);
 }
 
-export function isPlayerCurHand(player: Player, ...kinds: HandKind[]) {
+export function isPlayerCurrentHand(player: Player, ...kinds: HandKind[]) {
   return kinds.some((kind) => playerCurHand(player) === kind);
 }
 
@@ -194,4 +194,12 @@ export function canPlay(card: Readonly<Card>, pile: Readonly<Pile>): boolean {
 
 export function playableCards(pile: Readonly<Pile>): Rank[] {
   return createDeck().filter((card) => canPlay(card, pile));
+}
+
+export function shuffle<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }

@@ -1,16 +1,26 @@
-import { createMachine } from "xstate";
-import { sendParent } from "xstate/lib/actions";
+import { ActorRef, sendTo, setup, Snapshot } from "xstate";
+
 import { Card } from "../../lib";
-import { PlayerEvents } from "../shared/player-events";
 
-type HumanEvents =
-  | { type: "ASK_PICK_CARD" }
-  | { type: "CHOOSE_CARD"; card: Card; n?: number };
+type ChildEvent = {
+  type: "CARD_CHOSEN";
+  card: Card;
+  n?: number;
+};
 
-const humanMachine = createMachine<null, HumanEvents>({
-  predictableActionArguments: true,
+type ParentActor = ActorRef<Snapshot<unknown>, ChildEvent>;
+
+const humanMachine = setup({
+  types: {
+    events: {} as
+      | { type: "ASK_PICK_CARD" }
+      | { type: "CHOOSE_CARD"; card: Card; n?: number },
+    input: {} as { parentRef: ParentActor },
+  },
+}).createMachine({
   id: "human",
   initial: "idle",
+  context: ({ input: { parentRef } }) => ({ parentRef }),
   states: {
     idle: {
       on: {
@@ -20,8 +30,13 @@ const humanMachine = createMachine<null, HumanEvents>({
     waitingForHuman: {
       on: {
         CHOOSE_CARD: {
-          actions: sendParent((_, event) =>
-            PlayerEvents["CARD_CHOSEN"](event.card, event.n)
+          actions: sendTo(
+            ({ context }) => context.parentRef,
+            ({ event }) => ({
+              type: "CARD_CHOSEN",
+              card: event.card,
+              n: event.n,
+            })
           ),
           target: "idle",
         },

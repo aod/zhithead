@@ -1,16 +1,11 @@
-import { useSelector } from "@xstate/react";
 import { motion, Variants } from "framer-motion";
-import { useContext, useState } from "react";
-import { hasWonStor } from "../state/selectors";
+
+import * as selectors from "../state/selectors";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
 export default function ResultOverlay() {
-  const { zhitheadService: zh } = useContext(GlobalStateContext);
-  const { send } = zh;
-
-  const _hasWon = useSelector(zh, hasWonStor);
-  const [hasWon, setHasWon] = useState<boolean | null>(null);
-  if (hasWon === null) setHasWon(_hasWon);
+  const { send } = GlobalStateContext.useActorRef();
+  const hasWon = GlobalStateContext.useSelector(selectors.hasWon);
 
   const msgs = {
     won: {

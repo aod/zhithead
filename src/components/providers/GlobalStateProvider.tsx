@@ -1,18 +1,19 @@
-import { createContext, PropsWithChildren } from "react";
-import { useInterpret } from "@xstate/react";
+import { createActorContext } from "@xstate/react";
+import { createBrowserInspector } from "@statelyai/inspect";
+
 import { zhitheadMachine } from "../../state/machines/zhithead.machine";
-import { InterpreterFrom } from "xstate";
 
-export const GlobalStateContext = createContext({
-  zhitheadService: {} as InterpreterFrom<typeof zhitheadMachine>,
-});
-
-export default function GlobalStateProvider(props: PropsWithChildren) {
-  const zhitheadService = useInterpret(zhitheadMachine);
-
-  return (
-    <GlobalStateContext.Provider value={{ zhitheadService }}>
-      {props.children}
-    </GlobalStateContext.Provider>
-  );
+declare global {
+  interface Window {
+    inspector: ReturnType<typeof createBrowserInspector> | undefined;
+  }
 }
+
+const inspector = createBrowserInspector({
+  autoStart: false,
+});
+window.inspector = inspector;
+
+export const GlobalStateContext = createActorContext(zhitheadMachine, {
+  inspect: inspector.inspect,
+});
