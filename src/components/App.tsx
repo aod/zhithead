@@ -12,6 +12,7 @@ import Switcher from "./Switcher";
 import SortButton from "./SortButton";
 import ResultOverlay from "./ResultOverlay";
 import TitleScreenOverlay from "./TitleScreenOverlay";
+import History from "./History";
 
 export default function App() {
   const isPlaying = GlobalStateContext.useSelector(selectors.isPlaying);
@@ -69,10 +70,15 @@ export default function App() {
         <motion.div
           initial={{ opacity: 0.4 }}
           animate={{ opacity: 1 }}
-          className="flex h-full items-center justify-center gap-12"
+          className="flex h-full items-center justify-center"
         >
-          <Deck />
-          <Pile />
+          <div className="relative flex gap-12">
+            <Deck />
+            <Pile />
+            <div className="absolute left-full top-0 ml-12">
+              <History />
+            </div>
+          </div>
         </motion.div>
       )}
 
