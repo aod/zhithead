@@ -1,19 +1,20 @@
-import { useSelector } from "@xstate/react";
 import { AnimatePresence, motion, TargetAndTransition } from "framer-motion";
 import { useContext } from "react";
+
 import { getRank, Rank, Card as TCard } from "../lib";
+import * as selectors from "../state/selectors";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
+import { BreakpointsContext } from "./providers/BreakpointsProvider";
+
 import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
-import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import Fire from "./ui/Fire";
-import { BreakpointsContext } from "./providers/BreakpointsProvider";
 
 export default function Pile() {
-  const { zhitheadService } = useContext(GlobalStateContext);
-  const pile = useSelector(zhitheadService, (state) => state.context.pile);
-  const { send } = zhitheadService;
+  const { send } = GlobalStateContext.useActorRef();
 
+  const pile = GlobalStateContext.useSelector(selectors.getPile);
   const topCard = pile.at(-1);
   const shouldBurnPile =
     topCard !== undefined && getRank(topCard) === Rank.Num10;

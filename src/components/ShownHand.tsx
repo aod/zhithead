@@ -1,11 +1,11 @@
-import { useSelector } from "@xstate/react";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { useContext } from "react";
+
+import * as selectors from "../state/selectors";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
 import { canPlay } from "../lib";
 import { Player } from "../state/machines/zhithead.machine";
-import { isChoosingFaceUpCardsStor, isPlayingStor } from "../state/selectors";
-import { GlobalStateContext } from "./providers/GlobalStateProvider";
+
 import Hand from "./ui/Hand";
 import OffHand from "./ui/OffHand";
 
@@ -14,31 +14,21 @@ interface ShownHandProps {
 }
 
 export default function ShownHand(props: ShownHandProps) {
-  const { zhitheadService } = useContext(GlobalStateContext);
-  const isPlaying = useSelector(zhitheadService, isPlayingStor);
-  const isChoosingFaceUpCards = useSelector(
-    zhitheadService,
-    isChoosingFaceUpCardsStor
+  const isPlaying = GlobalStateContext.useSelector(selectors.isPlaying);
+  const isChoosingFaceUpCards = GlobalStateContext.useSelector(
+    selectors.isChoosingFaceUpCards
   );
-
-  const shownHand = useSelector(
-    zhitheadService,
-    (state) => state.context.shownHand[props.player]
+  const shownHand = GlobalStateContext.useSelector(
+    selectors.getPlayerShownHand(props.player)
   );
-  const hand = useSelector(
-    zhitheadService,
-    (state) => state.context[props.player].hand
+  const hand = GlobalStateContext.useSelector(
+    selectors.getPlayerHand(props.player)
   );
-  const offHand = useSelector(
-    zhitheadService,
-    (state) => state.context[props.player].offHand
+  const offHand = GlobalStateContext.useSelector(
+    selectors.getPlayerOffHand(props.player)
   );
-  const pile = useSelector(zhitheadService, (state) => state.context.pile);
-
-  // TODO: Is this the correct way to access services?
-  const human = useSelector(zhitheadService, (state) => state.children.human);
-  const { send } = human;
-
+  const pile = GlobalStateContext.useSelector(selectors.getPile);
+  const human = GlobalStateContext.useSelector(selectors.getHumanActor);
   const flipped = props.player === "bot";
 
   return (
@@ -57,7 +47,7 @@ export default function ShownHand(props: ShownHandProps) {
             hand={hand}
             onCardClick={(card, _, n) => {
               if (props.player === "human") {
-                send({ type: "CHOOSE_CARD", card, n });
+                human?.send({ type: "CHOOSE_CARD", card, n });
               }
             }}
             grayOut={
@@ -76,7 +66,7 @@ export default function ShownHand(props: ShownHandProps) {
             offHand={offHand}
             onCardPositionedClick={(card, _, n) => {
               if (props.player === "human") {
-                send({ type: "CHOOSE_CARD", card, n });
+                human?.send({ type: "CHOOSE_CARD", card, n });
               }
             }}
             grayOutFaceUpCard={(card) => !!hand.length || !canPlay(card, pile)}

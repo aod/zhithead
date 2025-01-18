@@ -1,16 +1,24 @@
-import { StateFrom } from "xstate";
-import { zhitheadMachine } from "./machines/zhithead.machine";
+import { SnapshotFrom } from "xstate";
+import { zhitheadMachine, Player } from "./machines/zhithead.machine";
 
-interface Selector {
-  (state: StateFrom<typeof zhitheadMachine>): boolean;
-}
+type State = SnapshotFrom<typeof zhitheadMachine>;
 
-export const isChoosingFaceUpCardsStor: Selector = (state) =>
+export const isChoosingFaceUpCards = (state: State) =>
   state.matches("choosingFaceUpCards");
+export const isPlaying = (state: State) => state.matches("playing");
+export const hasWon = (state: State) => state.matches("won");
+export const hasLost = (state: State) => state.matches("lost");
+export const isGameOver = (state: State) =>
+  state.matches("won") || state.matches("lost");
 
-export const isPlayingStor: Selector = (state) => state.matches("playing");
+export const getPile = (state: State) => state.context.pile;
+export const getDeck = (state: State) => state.context.deck;
 
-export const isGameOverStor: Selector = (state) =>
-  ["won", "lost"].some(state.matches);
-export const hasWonStor: Selector = (state) => state.matches("won");
-export const hasLostStor: Selector = (state) => state.matches("lost");
+export const getPlayerHand = (player: Player) => (state: State) =>
+  state.context[player].hand;
+export const getPlayerOffHand = (player: Player) => (state: State) =>
+  state.context[player].offHand;
+export const getPlayerShownHand = (player: Player) => (state: State) =>
+  state.context.shownHand[player];
+
+export const getHumanActor = (state: State) => state.children.human;

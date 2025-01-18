@@ -1,7 +1,9 @@
 import { motion, Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Card from "./Card";
+
 import { Cards, Card as TCard, getRank } from "../../lib";
+
+import Card from "./Card";
 
 export interface HandProps {
   hand: Cards;

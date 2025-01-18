@@ -1,29 +1,24 @@
-import { useSelector } from "@xstate/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
-import Deck from "./Deck";
+import { useEffect, useState } from "react";
+
+import * as selectors from "../state/selectors";
 import { GlobalStateContext } from "./providers/GlobalStateProvider";
+
+import Deck from "./Deck";
 import HumanOffHand from "./HumanOffHand";
 import Pile from "./Pile";
 import ShownHand from "./ShownHand";
 import Switcher from "./Switcher";
-import {
-  isChoosingFaceUpCardsStor,
-  isGameOverStor,
-  isPlayingStor,
-} from "../state/selectors";
 import SortButton from "./SortButton";
 import ResultOverlay from "./ResultOverlay";
 import TitleScreenOverlay from "./TitleScreenOverlay";
 
 export default function App() {
-  const { zhitheadService } = useContext(GlobalStateContext);
-  const isPlaying = useSelector(zhitheadService, isPlayingStor);
-  const isChoosingFaceUpCards = useSelector(
-    zhitheadService,
-    isChoosingFaceUpCardsStor
+  const isPlaying = GlobalStateContext.useSelector(selectors.isPlaying);
+  const isChoosingFaceUpCards = GlobalStateContext.useSelector(
+    selectors.isChoosingFaceUpCards
   );
-  const isGameOver = useSelector(zhitheadService, isGameOverStor);
+  const isGameOver = GlobalStateContext.useSelector(selectors.isGameOver);
 
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   useEffect(() => {

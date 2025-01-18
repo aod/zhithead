@@ -1,17 +1,14 @@
-import { useSelector } from "@xstate/react";
 import clsx from "clsx";
-import { useContext } from "react";
+
+import * as selectors from "../state/selectors";
+import { GlobalStateContext } from "./providers/GlobalStateProvider";
+
 import Card from "./ui/Card";
 import CardHolder from "./ui/CardHolder";
 import Count from "./ui/Count";
-import { GlobalStateContext } from "./providers/GlobalStateProvider";
 
 export default function Deck() {
-  const globalServices = useContext(GlobalStateContext);
-  const deck = useSelector(
-    globalServices.zhitheadService,
-    (state) => state.context.deck
-  );
+  const deck = GlobalStateContext.useSelector(selectors.getDeck);
   const hasDeck = Boolean(deck.length);
 
   return (
