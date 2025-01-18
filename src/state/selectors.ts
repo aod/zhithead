@@ -1,4 +1,5 @@
 import { SnapshotFrom } from "xstate";
+
 import { zhitheadMachine, Player } from "./machines/zhithead.machine";
 
 type State = SnapshotFrom<typeof zhitheadMachine>;
@@ -22,3 +23,5 @@ export const getPlayerShownHand = (player: Player) => (state: State) =>
   state.context.shownHand[player];
 
 export const getHumanActor = (state: State) => state.children.human;
+
+export const getHistory = (state: State) => state.context.history;

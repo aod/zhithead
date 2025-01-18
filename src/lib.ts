@@ -28,6 +28,13 @@ export function createCard(suite: Readonly<Suite>, rank: Readonly<Rank>): Card {
   return (rank << SUITE_BIN_WIDTH) | suite;
 }
 
+export function displayCard(card: Card) {
+  const rank = getRank(card);
+  const rankDisplay = rank <= Rank.Num10 ? rank + 2 : Rank[rank].at(0);
+  const suiteDisplay = Suite[getSuite(card)].at(0);
+  return `${rankDisplay}${suiteDisplay}`;
+}
+
 function _1s(n: number): number {
   return (1 << n) - 1;
 }
@@ -118,6 +125,14 @@ export function makePlayer(): Player {
   };
 }
 
+function displayPlayer(player: Readonly<Player>): string {
+  return `Player(${[
+    player.hand.map(displayCard).join("|"),
+    asCards(player.offHand.faceDown).map(displayCard).join("|"),
+    asCards(player.offHand.faceUp).map(displayCard).join("|"),
+  ].join(":")})`;
+}
+
 export function totalCards(player: Player) {
   return HandKinds.map((handKind) => playerHandLen(player, handKind)).reduce(
     (sum, len) => sum + len,
@@ -202,4 +217,77 @@ export function shuffle<T>(array: T[]): T[] {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+export type Zhithead = {
+  deck: Deck;
+  pile: Pile;
+  turn: number;
+  players: Player[];
+};
+
+export function displayZhithead(zhithead: Readonly<Zhithead>): string {
+  return [
+    `Deck(${zhithead.deck.map(displayCard).join("")})`,
+    `Pile(${zhithead.pile.map(displayCard).join("")})`,
+    `Turn(${zhithead.turn})`,
+    `Players(${zhithead.players.map(displayPlayer).join(",")})`,
+  ].join(":");
+}
+
+export function decodeZhithead(from: string): Zhithead {
+  const [encodedDeck, encodedPile, turn, ...encodedPlayers] = from.split(":");
+  const players = [
+    encodedPlayers.slice(0, 3),
+    encodedPlayers.slice(3, 6),
+    encodedPlayers.slice(6, 9),
+    encodedPlayers.slice(9, 12),
+  ]
+    .filter((it) => it.length > 0)
+    .map(decodePlayer);
+  return {
+    deck: encodedDeck.split("").map(decodeCard),
+    pile: encodedPile.split("").map(decodeCard),
+    turn: Number(turn),
+    players,
+  };
+}
+
+export type EncodedZhithead = string;
+
+export function encodeZhithead(zhithead: Readonly<Zhithead>): EncodedZhithead {
+  return [
+    zhithead.deck.map(encodeCard).join(""),
+    zhithead.pile.map(encodeCard).join(""),
+    zhithead.turn,
+    ...zhithead.players.map((player) =>
+      [
+        player.hand.map(encodeCard).join(""),
+        asCards(player.offHand.faceDown).map(encodeCard).join(""),
+        asCards(player.offHand.faceUp).map(encodeCard).join(""),
+      ].join(":")
+    ),
+  ].join(":");
+}
+
+export function decodeCard(from: string): Card {
+  const code = from.charCodeAt(0);
+  const card = code <= 90 ? code - 65 : 26 + code - 97;
+  return card as Card;
+}
+
+export function encodeCard(to: Card): string {
+  return to >= 26
+    ? String.fromCharCode(to - 26 + 97)
+    : String.fromCharCode(to + 65);
+}
+
+function decodePlayer(player: string[]): Player {
+  return {
+    hand: player[0].split("").map(decodeCard),
+    offHand: {
+      faceDown: player[1].split("").map(decodeCard) as OffHandCards,
+      faceUp: player[2].split("").map(decodeCard) as OffHandCards,
+    },
+  };
 }

@@ -17,6 +17,8 @@ import {
   Player as TPlayer,
   totalCards,
   shuffle,
+  EncodedZhithead,
+  encodeZhithead,
 } from "../../lib";
 import humanMachine from "./human.machine";
 import { createBotService } from "../services/bot.service";
@@ -34,6 +36,7 @@ interface ZhitheadContext {
     bot: ShownHand;
   };
   currentTurn: Player;
+  history: EncodedZhithead[];
 }
 
 function createInitialContext(): ZhitheadContext {
@@ -52,6 +55,7 @@ function createInitialContext(): ZhitheadContext {
       bot: "hand",
     },
     currentTurn: "human",
+    history: [],
   };
 }
 
@@ -219,6 +223,17 @@ export const zhitheadMachine = setup({
                   })
                 ),
                 "changeSwitcher",
+                assign(({ context }) => ({
+                  history: [
+                    encodeZhithead({
+                      deck: context.deck,
+                      pile: context.pile,
+                      turn: context.currentTurn === "human" ? 0 : 1,
+                      players: [context.human, context.bot],
+                    }),
+                    ...context.history,
+                  ],
+                })),
               ],
               on: {
                 CARD_CHOSEN: [
